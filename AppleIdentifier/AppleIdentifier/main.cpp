@@ -1,4 +1,4 @@
-#include <cmath>
+#include <math.h>
 #include <cstdio>
 #include <fstream>
 #include "imageIO.h"
@@ -72,7 +72,8 @@ void applyFilter(unsigned char imageSample[], unsigned char returnedFilter[], in
 				int imageIndex = (x + col) + (y + row) * imageWidth;
 				int kernelIndex = (x + kernelWidthExtent) + (y + kernelWidthExtent) * kernelWidth;
 
-				result += imageSample[imageIndex] * kernel[kernelIndex];
+				result += (float)imageSample[imageIndex] * kernel[kernelIndex];
+				
 			}
 		}
 	}
@@ -138,7 +139,7 @@ void applyKernal(unsigned char * inData, int rowStride, int row, int col, int ma
 
 int main() {
 	imageIO imageLoader;
-	unsigned char* data = imageLoader.openImage("apple.png");
+	unsigned char* data = imageLoader.openImage("images.bmp");
 	int imageWidth = imageLoader.getImageWidth();
 	int imageHeight = imageLoader.getImageHeight();
 	int imageBytes = imageLoader.getImageBytes();
@@ -177,24 +178,37 @@ int main() {
 
 	
 	//delete[] grayData;
+	//unsigned char* sobelData = new unsigned char[imageWidth * imageHeight];
+	//int* sobelData = new int[imageWidth * imageHeight];
 	unsigned char* sobelData = new unsigned char[imageWidth * imageHeight];
 	int returnedX, returnedY, squaredResult;
 	printf("%s \n", "Applying Sobel Filter");
 	////////////////////////
 	// Apply Sobel Filter //
 	////////////////////////
-	for (int x = 1; x < imageHeight - 1; x++) {
-		for (int y = 1; y < imageWidth - 1; y++) {
+	for (int x = 1; x < imageHeight-1; x++) {
+		for (int y = 1; y < imageWidth-1; y++) {
 
 			int index = x * imageWidth + y;
+			//int index = y*imageWidth + x;
 
+			if (x == 1576 && y == 928) {
+				int m = 3;
+			}
 			//returnedX = applyFilter( calculateImageSample(grayData , index, 3), 3, 3, sobelKernelX);
 			//returnedY = applyFilter( calculateImageSample(grayData, index, 3), 3, 3, sobelKernelY);
 			applyFilter(grayData, sobelX, y, x, imageWidth, imageHeight, 3, 3, sobelKernelX);
 			applyFilter(grayData, sobelY, y, x, imageWidth, imageHeight, 3, 3, sobelKernelY);
 			//squaredResult = sqrt((returnedX * returnedX) + (returnedY * returnedY));
 
-			sobelData[index] = (unsigned char)sqrt(sobelX[index] * sobelX[index] * 3 + sobelY[index] * sobelY[index] * 3);
+			int squared = sqrt(sobelX[index] * sobelX[index] + sobelY[index] * sobelY[index]);
+			//squared = (squared * 255) / 360;
+			if (index == 5000000) {
+				int m = 3;
+			}
+			
+			//sobelData[index] = (int)sqrt(sobelX[index] * sobelX[index] + sobelY[index] * sobelY[index]);
+			sobelData[index] = (unsigned char)squared;
 
 			returnedX = returnedY = squaredResult = 0;
 		}
@@ -211,15 +225,21 @@ int main() {
 			sobelData[index] = (unsigned char)sqrt(sobelX[index] * sobelX[index] + sobelY[index] * sobelY[index]);
 		}
 	}*/
+		for (int i = 5000000; i < 5000010; i++) {
+			printf("%d \n", sobelData[i]);
+		}
 
-	imageLoader.saveImage("apple-no-Gauss-Kyle-test.png", sobelData, size);
+	std::cin.get();
+
+	imageLoader.saveImage("test2.bmp", sobelData, size);
 
 	delete[] sobelX;
 	delete[] sobelY;
 	delete[] sobelData;
 	delete[] gaussianData;
 
-	return 0;
+	std::cin.get();
+	//return 0;
 
 }
 
