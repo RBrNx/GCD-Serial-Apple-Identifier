@@ -124,11 +124,13 @@ int main() {
 	printf("%s \n", "Performing Colour Histogram");
 	for (int y = 0; y < imageHeight; y+=4) {
 		for (int x = 0; x < imageWidth; x+=4) {
-			int index = x * imageHeight + y;
+			int index = y * imageHeight + x;
 
-			if (rawData[index + 4] != 0) {
+			if (rawData[index + 3] != 0) {
 
-				if (rawData[index] < 251 && rawData[index + 1] < 251 && rawData[index + 2] < 251) {
+				//std::cout << rawData[index] << rawData[index + 1] << rawData[index + 2];
+
+				if (rawData[index] < 251 || rawData[index + 1] < 251 || rawData[index + 2] < 251) {
 
 					if (rawData[index] > 0 && rawData[index] < 64) redBucket[1] += 1;
 					if (rawData[index] > 63 && rawData[index] < 128) redBucket[2] += 1;

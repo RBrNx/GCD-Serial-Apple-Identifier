@@ -15,13 +15,13 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="imageIO.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="lodepng.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="imageIO.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -38,6 +38,15 @@
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="images.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="blue.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="green.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="red.png">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

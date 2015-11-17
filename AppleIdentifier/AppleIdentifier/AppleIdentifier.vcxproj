@@ -128,7 +128,10 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="apple.png" />
+    <Image Include="blue.png" />
+    <Image Include="green.png" />
     <Image Include="images.bmp" />
+    <Image Include="red.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
