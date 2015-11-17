@@ -21,6 +21,14 @@ float gaussianFilter2[25] = { 2, 4, 5, 4, 2,
 							 4, 9, 12, 9, 4,
 							 2, 4, 5, 4, 2 };
 
+int redBucket[4];
+int blueBucket[4];
+int greenBucket[4];
+
+int redBucketTotal;
+int greenBucketTotal;
+int blueBucketTotal;
+
 
 imageIO imageLoader;
 
@@ -109,6 +117,49 @@ int main() {
 	int imageHeight = imageLoader.getImageHeight();
 	int imageBytes = imageLoader.getImageBytes();
 	int size = imageWidth * imageHeight * imageBytes;
+
+	//////////////////////
+	// Colour Histogram //
+	//////////////////////
+	printf("%s \n", "Performing Colour Histogram");
+	for (int y = 0; y < imageHeight; y+=4) {
+		for (int x = 0; x < imageWidth; x+=4) {
+			int index = x * imageHeight + y;
+
+			if (rawData[index + 4] != 0) {
+
+				if (rawData[index] < 251 && rawData[index + 1] < 251 && rawData[index + 2] < 251) {
+
+					if (rawData[index] > 0 && rawData[index] < 64) redBucket[1] += 1;
+					if (rawData[index] > 63 && rawData[index] < 128) redBucket[2] += 1;
+					if (rawData[index] > 127 && rawData[index] < 192) redBucket[3] += 1;
+					if (rawData[index] > 191 && rawData[index] < 256) redBucket[4] += 1;
+
+					if (rawData[index + 1] > 0 && rawData[index + 1] < 64) greenBucket[1] += 1;
+					if (rawData[index + 1] > 63 && rawData[index + 1] < 128) greenBucket[2] += 1;
+					if (rawData[index + 1] > 127 && rawData[index + 1] < 192) greenBucket[3] += 1;
+					if (rawData[index + 1] > 191 && rawData[index + 1] < 256) greenBucket[4] += 1;
+
+					if (rawData[index + 2] > 0 && rawData[index + 2] < 64) blueBucket[1] += 1;
+					if (rawData[index + 2] > 63 && rawData[index + 2] < 128) blueBucket[2] += 1;
+					if (rawData[index + 2] > 127 && rawData[index + 2] < 192) blueBucket[3] += 1;
+					if (rawData[index + 2] > 191 && rawData[index + 2] < 256) blueBucket[4] += 1;
+				}
+			}
+		}
+	}
+
+	for (int i = 0; i < 4; i++) {
+		redBucketTotal += redBucket[i];
+		greenBucketTotal += greenBucket[i];
+		blueBucketTotal += blueBucket[i];
+	}
+
+	printf("%d \n", redBucketTotal/4);
+	printf("%d \n", greenBucketTotal/4);
+	printf("%d \n", blueBucketTotal/4);
+
+	std::cin.get();
 
 	unsigned char* greyscaleData = RGBtoGreyscale(rawData, imageWidth, imageHeight, imageBytes);
 	delete[] rawData;
