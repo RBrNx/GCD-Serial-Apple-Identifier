@@ -1,13 +1,26 @@
 #include <cmath>
 #include "imageIO.h"
 
-int sobelFilterX[9] = { -1, 0, 1,
+float sobelFilterX[9] = { -1, 0, 1,
 						-2, 0, 2,
 						-1, 0, 1 };
 
-int sobelFilterY[9] = { -1, -2, -1,
+float sobelFilterY[9] = { -1, -2, -1,
 						 0, 0, 0,
 						 1, 2, 1 };
+
+float gaussianFilter[25] = { 1, 4, 7, 4, 1,
+						4, 16, 26, 16, 4,
+						7, 26, 41, 26, 7,
+						4, 16, 26, 16, 4,
+						1, 4, 7, 4, 1 };
+
+float gaussianFilter2[25] = { 2, 4, 5, 4, 2,
+							 4, 9, 12, 9, 4,
+                            5, 12, 15, 12, 5,
+							 4, 9, 12, 9, 4,
+							 2, 4, 5, 4, 2 };
+
 
 imageIO imageLoader;
 
@@ -32,7 +45,7 @@ unsigned char* RGBtoGreyscale(unsigned char image[], int imageWidth, int imageHe
 	return greyscaleData;
 }
 
-void calculateImageSample(unsigned char image[], int index, int imageBytes, int imageWidth, int outData[], int kernelWidth, int kernelHeight) {
+void calculateImageSample(unsigned char image[], int index, int imageBytes, int imageWidth, float outData[], int kernelWidth, int kernelHeight) {
 
 	for (int x = 0; x < kernelWidth; x++) {
 		for (int y = 0; y < kernelHeight; y++) {
@@ -46,7 +59,7 @@ void calculateImageSample(unsigned char image[], int index, int imageBytes, int 
 	}
 }
 
-int applyFilter(int imageSample[], int kernel[], int kernelWidth, int kernelHeight) {
+int applyFilter(float imageSample[], float kernel[], int kernelWidth, int kernelHeight) {
 
 	int filteredValue = 0;
 
@@ -91,7 +104,7 @@ void padOutImage(unsigned char image[], int imageWidth, int imageHeight, int ima
 }
 
 int main() {
-	unsigned char* rawData = imageLoader.openImage("images.png");
+	unsigned char* rawData = imageLoader.openImage("apple.png");
 	int imageWidth = imageLoader.getImageWidth();
 	int imageHeight = imageLoader.getImageHeight();
 	int imageBytes = imageLoader.getImageBytes();
@@ -100,20 +113,53 @@ int main() {
 	unsigned char* greyscaleData = RGBtoGreyscale(rawData, imageWidth, imageHeight, imageBytes);
 	delete[] rawData;
 
+	///////////////////////////
+	// Apply Gaussian Filter //
+	///////////////////////////
+	printf("%s \n", "Applying Gaussian Filter");
+	unsigned char* gaussianData = new unsigned char[size];
+
+	for (int i = 0; i < 25; i++) {
+		gaussianFilter[i] *= 1 / 273.0f;
+	}
+
+	float gaussImageSample[25];
+
+	for (int y = 5 + 1; y < imageHeight - (5 + 1); y++) {
+		for (int x = 5 + 1; x < imageWidth - (5 + 1); x++) {
+
+			int index = ((y * imageWidth * imageBytes) + (x * imageBytes));
+
+			calculateImageSample(greyscaleData, index, imageBytes, imageWidth, gaussImageSample, 5, 5);
+
+			int result = applyFilter(gaussImageSample, gaussianFilter, 5, 5);
+
+			result = result > 255 ? 255 : result;
+
+			gaussianData[index] = result;
+			gaussianData[index + 1] = result;
+			gaussianData[index + 2] = result;
+			if (imageBytes == 4) {
+				gaussianData[index + 3] = 255;
+			}
+		}
+	}
+
 	////////////////////////
 	// Apply Sobel Filter //
 	////////////////////////
 	printf("%s \n", "Applying Sobel Filter");
 	unsigned char* sobelData = new unsigned char[size];
+	delete[] greyscaleData;
 
-	int imageSample[9];
+	float imageSample[9];
 
 	for (int y = 1; y < imageHeight - 1; y++) {
 		for (int x = 1; x < imageWidth - 1; x++) {
 
 			int index = ((y * imageWidth * imageBytes) + (x * imageBytes));
 
-			calculateImageSample(greyscaleData, index, imageBytes, imageWidth, imageSample, 3, 3);
+			calculateImageSample(gaussianData, index, imageBytes, imageWidth, imageSample, 3, 3);
 
 			int resultX = applyFilter(imageSample, sobelFilterX, 3, 3);
 			int resultY = applyFilter(imageSample, sobelFilterY, 3, 3);
@@ -137,9 +183,9 @@ int main() {
 	////////////////////////
 	padOutImage(sobelData, imageWidth, imageHeight, imageBytes);
 
-	imageLoader.saveImage("test.png", sobelData, size);
+	imageLoader.saveImage("sobel+gauss2.png", sobelData, size);
 
-	delete[] greyscaleData;
+	delete[] gaussianData;
 	delete[] sobelData;
 
 	return 0;
