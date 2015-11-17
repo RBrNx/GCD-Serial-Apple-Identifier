@@ -205,23 +205,8 @@ void imageIO::saveImage(char* filename, unsigned char dataArray[], int size) {
 	}
 	else if (strFilename.substr(strFilename.length() - 4) == ".png") {
 
-		unsigned char* paddedData = new unsigned char[imageWidth * imageHeight * imageBytes];
-
-		for (int i = 0; i < imageHeight; i++) {
-			for (int j = 0; j < imageWidth; j++) {
-				int index = i * imageWidth + j;
-
-				paddedData[index * imageBytes] = dataArray[index];
-				paddedData[index * imageBytes + 1] = dataArray[index];
-				paddedData[index * imageBytes + 2] = dataArray[index];
-				paddedData[index * imageBytes + 3] = 255;
-				}
-			}
-
-		buffer.insert(buffer.begin(), paddedData, paddedData + size);
+		buffer.insert(buffer.begin(), dataArray, dataArray + size);
 		savePNG(filename, buffer);
-
-		delete[] paddedData;
 	}
 }
 

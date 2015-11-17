@@ -1,151 +1,139 @@
-#include <math.h>
-#include <cstdio>
-#include <fstream>
+#include <cmath>
 #include "imageIO.h"
 
-float sobelKernelY[9] = { 1, 2, 1, 
-						0, 0, 0, 
-					  -1, -2, -1 };
-
-float sobelKernelX[9] = { -1, 0, 1,
-						-2, 0, 2, 
+int sobelFilterX[9] = { -1, 0, 1,
+						-2, 0, 2,
 						-1, 0, 1 };
 
-float gaussianKernel[25] = { 2, 4, 5, 4, 2,
-						   4, 9, 12, 9, 4,
-						  5, 12, 15, 12, 5,
-						   4, 9, 12, 9, 4,
-						   2, 4, 5, 4, 2 };
+int sobelFilterY[9] = { -1, -2, -1,
+						 0, 0, 0,
+						 1, 2, 1 };
 
-unsigned char* RGBtoGrayscale(int width, int height, int imageBytes, unsigned char dataArray[]) {
-	unsigned char* grayData = new unsigned char[height * width];
+imageIO imageLoader;
 
-	double rc, gc, bc, gray;
+unsigned char* RGBtoGreyscale(unsigned char image[], int imageWidth, int imageHeight, int imageBytes) {
+	
+	int size = imageWidth * imageHeight * imageBytes;
+	unsigned char* greyscaleData = new unsigned char[size];
 
-	for (int y = 0; y < height; y++) {
-		for (int x = 0; x < width; x++) {
+	for (int y = 0; y < imageHeight; y++) {
+		for (int x = 0; x < imageWidth; x++) {
 			
-			int index = (x + width * y) * imageBytes;
-
-			bc = (double)dataArray[index]; //Blue, Green, Red since data is flipped
-			gc = (double)dataArray[index + 1];
-			rc = (double)dataArray[index + 2];
-			gray = 0.2126*rc + 0.7152*gc + 0.0722*bc;
-
-			grayData[y * width + x] = (unsigned char)gray;
-
-			if (x == 1576 && y == 928) {
-				int m = 3;;
-			}
+			int index = ( (y * imageWidth * imageBytes) + (x * imageBytes) );
+			float greyscale = 0;
+			greyscale += image[index] * 0.21;
+			greyscale += image[index + 1] * 0.71;
+			greyscale += image[index + 2] * 0.07;
+			greyscaleData[index] = greyscaleData[index + 1] = greyscaleData[index + 2] = greyscale;
 		}
 	}
 
-	return grayData;
+	return greyscaleData;
 }
 
-float applyFilter(int imageSample[], int kernelWidth, int kernelHeight, float kernel[]) {
+void calculateImageSample(unsigned char image[], int index, int imageBytes, int imageWidth, int outData[], int kernelWidth, int kernelHeight) {
 
-	float result = 0;
+	for (int x = 0; x < kernelWidth; x++) {
+		for (int y = 0; y < kernelHeight; y++) {
+			int sampleIndex = x * kernelHeight + y;
 
-	for (int x = 0; x < kernelHeight; x++) {
-		for (int y = 0; y < kernelWidth; y++) {
-			int index = x * kernelWidth + y;
-
-			float imageIndex = imageSample[index];
-			float kernelIndex = kernel[index];
-			result += imageIndex * kernelIndex;
+			int offsetX = x - (kernelWidth / 2);
+			int offsetY = y - (kernelHeight / 2);
+			int imageIndex = index + (offsetY*imageWidth*imageBytes + (offsetX*imageBytes));
+			outData[sampleIndex] = image[imageIndex];
 		}
 	}
-
-	delete[] imageSample;
-	return result;
 }
 
-int* calculateImageSample(unsigned char dataArray[], int imageIndex, int kernelWidth) {
-	int* imageSample = new int[kernelWidth*kernelWidth];
-	int kernelSides = (int)floor(kernelWidth / 2.0f);
+int applyFilter(int imageSample[], int kernel[], int kernelWidth, int kernelHeight) {
 
-	for (int x = -kernelSides, i = 0; x <= kernelSides; x++, i++) {
-		for (int y = -kernelSides, j = 0; y <= kernelSides; y++, j++) {
-			int kernelIndex = (x + kernelSides) * kernelWidth + (y + kernelSides);
+	int filteredValue = 0;
 
-			imageSample[i * kernelWidth + j] = dataArray[kernelIndex + imageIndex];
+	for (int x = 0; x < kernelWidth; x++) {
+		for (int y = 0; y < kernelHeight; y++) {
+			
+			int index = x * kernelHeight + y;
+			filteredValue += imageSample[index] * kernel[index];
 		}
 	}
 
-	return imageSample;
+	return filteredValue;
+
+}
+
+void padOutImage(unsigned char image[], int imageWidth, int imageHeight, int imageBytes) {
+
+	for (int x = 0; x < imageWidth; x += 4) {
+		image[x] = 0;
+		image[x + 1] = 0;
+		image[x + 2] = 0;
+		if(imageBytes == 4) image[x + 3] = 255;
+
+		image[(imageHeight - 1) + x] = 0;
+		image[(imageHeight - 1) + x + 1] = 0;
+		image[(imageHeight - 1) + x + 2] = 0;
+		if (imageBytes == 4) image[(imageHeight - 1) + x + 3] = 255;
+	}
+
+	for (int y = 0; y < imageHeight; y++) {
+		image[0 + y * (imageWidth * imageBytes)] = 0;
+		image[1 + y * (imageWidth * imageBytes)] = 0;
+		image[2 + y * (imageWidth * imageBytes)] = 0;
+		if (imageBytes == 4) image[3 + y * (imageWidth * imageBytes)] = 255;
+
+		image[((imageWidth - 1) * imageBytes) + (y * (imageWidth * imageBytes))] = 0;
+		image[(((imageWidth - 1) * imageBytes) + 1) + (y * (imageWidth * imageBytes))] = 0;
+		image[(((imageWidth - 1) * imageBytes) + 2) + (y * (imageWidth * imageBytes))] = 0;
+		if (imageBytes == 4) image[(((imageWidth - 1) * imageBytes) + 3) + (y * (imageWidth * imageBytes))] = 255;
+	}
 }
 
 int main() {
-	imageIO imageLoader;
-	unsigned char* data = imageLoader.openImage("images.png");
+	unsigned char* rawData = imageLoader.openImage("images.bmp");
 	int imageWidth = imageLoader.getImageWidth();
 	int imageHeight = imageLoader.getImageHeight();
 	int imageBytes = imageLoader.getImageBytes();
-	int size = imageLoader.getSize();
-	
-	printf("%s \n", "Converting Colour to Grayscale");
-	unsigned char* grayData = RGBtoGrayscale(imageWidth, imageHeight, imageBytes, data);
-	delete[] data;
+	int size = imageWidth * imageHeight * imageBytes;
 
-  	//unsigned char* gaussianData = new unsigned char[imageWidth * imageHeight];
-	//float returnedGauss;
+	unsigned char* greyscaleData = RGBtoGreyscale(rawData, imageWidth, imageHeight, imageBytes);
 
-	//printf("%s \n", "Applying Gaussian Filter");
-	///////////////////////////
-	// Apply Gaussian Filter //
-	///////////////////////////
-	/*float gaussianMultiply = 1 / 159.0f;
-	for (int i = 0; i < 25; i++) {
-		gaussianKernel[i] *= gaussianMultiply;
-	}
-
-	for (int x = 2; x < imageHeight - 2; x++) {
-		for (int y = 2; y < imageWidth - 2; y++) {
-
-			int index = x * imageWidth + y;
-			
-			returnedGauss = applyFilter( calculateImageSample(grayData, index, 5), 5, 5, gaussianKernel);
-				
-			gaussianData[index] = returnedGauss;
-
-			returnedGauss = 0;
-		}
-	}*/
-
-	
-	//delete[] grayData;
-	unsigned char* sobelData = new unsigned char[imageWidth * imageHeight];
-	int returnedX, returnedY, squaredResult;
-	printf("%s \n", "Applying Sobel Filter");
 	////////////////////////
 	// Apply Sobel Filter //
 	////////////////////////
-	for (int x = 0; x < imageHeight; x++) {
-		for (int y = 0; y < imageWidth; y++) {
+	unsigned char* sobelData = new unsigned char[size];
 
-			int index = x * imageWidth + y;
+	int imageSample[9];
 
-			if (x == 1576 && y == 928) {
-				int m = 3;
+	for (int y = 1; y < imageHeight - 1; y++) {
+		for (int x = 1; x < imageWidth - 1; x++) {
+
+			int index = ((y * imageWidth * imageBytes) + (x * imageBytes));
+
+			calculateImageSample(greyscaleData, index, imageBytes, imageWidth, imageSample, 3, 3);
+
+			int resultX = applyFilter(imageSample, sobelFilterX, 3, 3);
+			int resultY = applyFilter(imageSample, sobelFilterY, 3, 3);
+
+			int final = sqrt((resultX*resultX * 3) + (resultY*resultY * 3));
+			final = final > 255 ? 255 : final;
+
+			unsigned char finalChar = final;
+
+			sobelData[index] = finalChar;
+			sobelData[index + 1] = finalChar;
+			sobelData[index + 2] = finalChar;
+			if (imageBytes == 4) {
+				sobelData[index + 3] = 255;
 			}
-			returnedX = applyFilter( calculateImageSample(grayData , index, 3), 3, 3, sobelKernelX);
-			returnedY = applyFilter( calculateImageSample(grayData, index, 3), 3, 3, sobelKernelY);
-
-			squaredResult = sqrt((returnedX * returnedX) + (returnedY * returnedY));
-			
-			sobelData[index] = (unsigned char)squaredResult;
-
-			returnedX = returnedY = squaredResult = 0;
 		}
 	}
+	
+	////////////////////////
+	// Pad Sides of Image //
+	////////////////////////
+	padOutImage(rawData, imageWidth, imageHeight, imageBytes);
 
-	imageLoader.saveImage("sobeltest.png", sobelData, size);
-
-	delete[] sobelData;
-	//delete[] gaussianData;
-
-	return 0;
-
+	imageLoader.saveImage("test.bmp", rawData, size);
 }
+
 

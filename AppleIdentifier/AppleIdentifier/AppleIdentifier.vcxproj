@@ -120,6 +120,7 @@
   <ItemGroup>
     <ClCompile Include="imageIO.cpp" />
     <ClCompile Include="lodepng.cpp" />
+    <ClCompile Include="main.bak" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
