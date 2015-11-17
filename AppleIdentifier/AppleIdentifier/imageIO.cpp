@@ -68,7 +68,6 @@ unsigned char* imageIO::readBMP(char* filename) {
 	else ("%s \n", "File Read Successfully");
 	fclose(f);
 	
-	
 	return readData;
 }
 

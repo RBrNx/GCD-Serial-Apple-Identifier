@@ -12,7 +12,8 @@ int sobelFilterY[9] = { -1, -2, -1,
 imageIO imageLoader;
 
 unsigned char* RGBtoGreyscale(unsigned char image[], int imageWidth, int imageHeight, int imageBytes) {
-	
+	printf("%s \n", "Converting RGB to Greyscale");
+
 	int size = imageWidth * imageHeight * imageBytes;
 	unsigned char* greyscaleData = new unsigned char[size];
 
@@ -62,6 +63,7 @@ int applyFilter(int imageSample[], int kernel[], int kernelWidth, int kernelHeig
 }
 
 void padOutImage(unsigned char image[], int imageWidth, int imageHeight, int imageBytes) {
+	printf("%s \n", "Padding edges of image");
 
 	for (int x = 0; x < imageWidth; x += 4) {
 		image[x] = 0;
@@ -89,17 +91,19 @@ void padOutImage(unsigned char image[], int imageWidth, int imageHeight, int ima
 }
 
 int main() {
-	unsigned char* rawData = imageLoader.openImage("images.bmp");
+	unsigned char* rawData = imageLoader.openImage("images.png");
 	int imageWidth = imageLoader.getImageWidth();
 	int imageHeight = imageLoader.getImageHeight();
 	int imageBytes = imageLoader.getImageBytes();
 	int size = imageWidth * imageHeight * imageBytes;
 
 	unsigned char* greyscaleData = RGBtoGreyscale(rawData, imageWidth, imageHeight, imageBytes);
+	delete[] rawData;
 
 	////////////////////////
 	// Apply Sobel Filter //
 	////////////////////////
+	printf("%s \n", "Applying Sobel Filter");
 	unsigned char* sobelData = new unsigned char[size];
 
 	int imageSample[9];
@@ -131,9 +135,14 @@ int main() {
 	////////////////////////
 	// Pad Sides of Image //
 	////////////////////////
-	padOutImage(rawData, imageWidth, imageHeight, imageBytes);
+	padOutImage(sobelData, imageWidth, imageHeight, imageBytes);
 
-	imageLoader.saveImage("test.bmp", rawData, size);
+	imageLoader.saveImage("test.png", sobelData, size);
+
+	delete[] greyscaleData;
+	delete[] sobelData;
+
+	return 0;
 }
 
 
