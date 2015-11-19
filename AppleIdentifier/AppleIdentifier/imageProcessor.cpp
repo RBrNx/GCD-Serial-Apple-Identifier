@@ -54,7 +54,7 @@ int imageProcessor::applyFilter(float imageSample[], float kernel[], int kernelW
 }
 
 unsigned char* imageProcessor::padOutImage(unsigned char image[], int imageWidth, int imageHeight, int imageBytes) {
-	printf("%s \n", "Covert image back to original size");
+	printf("%s \n", "Coverting image back to original size");
 	int paddedSize = imageWidth * imageHeight * imageBytes;
 	unsigned char* paddedImage = new unsigned char[paddedSize];
 
@@ -136,16 +136,21 @@ void imageProcessor::colourHistogram(unsigned char image[], int imageWidth, int 
 		blueBucketTotal += blueBucket[i];
 	}
 
+	printf("%s", "Total Red Pixels: ");
 	printf("%d \n", redBucketTotal);
+	printf("%s", "Total Green Pixels: ");
 	printf("%d \n", greenBucketTotal);
+	printf("%s", "Total Blue Pixels: ");
 	printf("%d \n", blueBucketTotal);
 }
 
 unsigned char* imageProcessor::NonMaxSuppress(unsigned char* sobelX, unsigned char* sobelY, unsigned char*  combinedSobel, int imageWidth, int imageHeight, int imageBytes) {
 	//Calculate the Edge Strengths
+	printf("%s \n", "NMS: Calculating Edge Strengths");
 	int size = imageWidth * imageHeight * imageBytes;
 	unsigned char* edgeStrength = new unsigned char[size];
 
+	printf("%s \n", "NMS: Calculating Gradient Directions");
 	for (int i = 0; i < size; i++) {
 		//Calculate the gradient direction
 		if (sobelX[i] == 0) {
@@ -157,7 +162,7 @@ unsigned char* imageProcessor::NonMaxSuppress(unsigned char* sobelX, unsigned ch
 			}
 		}
 		else {
-			edgeStrength[i] = (float)atan( abs(sobelY[i]) / (float)abs(sobelX[i]) );
+			edgeStrength[i] = (float)atan(abs(sobelY[i]) / (float)abs(sobelX[i]));
 		}
 
 		//Round the gradient direction to nearest 45 degree
@@ -166,40 +171,60 @@ unsigned char* imageProcessor::NonMaxSuppress(unsigned char* sobelX, unsigned ch
 		else if (edgeStrength[i] >= 67.5f && edgeStrength[i] <= 112.5f) { edgeStrength[i] = 90.0f; }
 		else if (edgeStrength[i] > 112.5f && edgeStrength[i] <= 157.5f) { edgeStrength[i] = 135.0f; }
 
-		//Use edge strengths in NMS
-		for (int y = 0; y < imageHeight; y++) {
-			for (int x = 0; x < imageWidth; x++) {
+	}
 
-				int index = ((y * imageWidth * imageBytes) + (x * imageBytes));
+	printf("%s \n", "Performing NMS");
+	//Use edge strengths in NMS
+	for (int y = 0; y < imageHeight; y++) {
+		for (int x = 0; x < imageWidth; x++) {
 
-				if (edgeStrength[index] == 0.0f) {
-					int rightPixel = ((y * imageWidth * imageBytes) + (x + 1 * imageBytes));
-					int leftPixel = ((y * imageWidth * imageBytes) + (x - 1 * imageBytes));
+			int index = ((y * imageWidth * imageBytes) + (x * imageBytes));
 
-					if ((leftPixel > 0 && rightPixel < size) && (combinedSobel[index] < combinedSobel[leftPixel] || combinedSobel[index] < combinedSobel[rightPixel])) { combinedSobel[index] = 0; }
-				}
-				else if (edgeStrength[index] == 45.0f) {
-					int diagUpRightPixel = ((y - 1 * imageWidth * imageBytes) + (x + 1 * imageBytes));
-					int diagDownLeftPixel = ((y + 1 * imageWidth * imageBytes) + (x - 1 * imageBytes));
+			if (edgeStrength[index] == 0.0f) {
+				int rightPixel = ((y * imageWidth * imageBytes) + (x + 1 * imageBytes));
+				int leftPixel = ((y * imageWidth * imageBytes) + (x - 1 * imageBytes));
 
-					if ((diagUpRightPixel > 0 && diagUpRightPixel < size && diagDownLeftPixel > 0 && diagDownLeftPixel < size) && (combinedSobel[index] < combinedSobel[diagDownLeftPixel] || combinedSobel[index] < combinedSobel[diagUpRightPixel])) { combinedSobel[index] = 0; }
-				}
-				else if (edgeStrength[index] == 90.0f) {
-					int abovePixel = ((y - 1 * imageWidth * imageBytes) + (x * imageBytes));
-					int belowPixel = ((y + 1 * imageWidth * imageBytes) + (x * imageBytes));
-
-					if ((abovePixel > 0 && belowPixel < size) && (combinedSobel[index] < combinedSobel[belowPixel] || combinedSobel[index] < combinedSobel[abovePixel])) { combinedSobel[index] = 0; }
-				}
-				else if (edgeStrength[index] == 135.0f) {
-					int diagUpLeftPixel = ((y - 1 * imageWidth * imageBytes) + (x - 1 * imageBytes));
-					int diagDownRightPixel = ((y + 1 * imageWidth * imageBytes) + (x + 1 * imageBytes));
-
-					if ((diagUpLeftPixel > 0 && diagUpLeftPixel < size && diagDownRightPixel > 0 && diagDownRightPixel < size) && (combinedSobel[index] < combinedSobel[diagDownRightPixel] || combinedSobel[index] < combinedSobel[diagUpLeftPixel])) { combinedSobel[index] = 0; }
-				}
-
+				if ((leftPixel > 0 && rightPixel < size) && (combinedSobel[index] < combinedSobel[leftPixel] || combinedSobel[index] < combinedSobel[rightPixel])) { combinedSobel[index] = 0; }
 			}
+			else if (edgeStrength[index] == 45.0f) {
+				int diagUpRightPixel = ((y - 1 * imageWidth * imageBytes) + (x + 1 * imageBytes));
+				int diagDownLeftPixel = ((y + 1 * imageWidth * imageBytes) + (x - 1 * imageBytes));
+
+				if ((diagUpRightPixel > 0 && diagUpRightPixel < size && diagDownLeftPixel > 0 && diagDownLeftPixel < size) && (combinedSobel[index] < combinedSobel[diagDownLeftPixel] || combinedSobel[index] < combinedSobel[diagUpRightPixel])) { combinedSobel[index] = 0; }
+			}
+			else if (edgeStrength[index] == 90.0f) {
+				int abovePixel = ((y - 1 * imageWidth * imageBytes) + (x * imageBytes));
+				int belowPixel = ((y + 1 * imageWidth * imageBytes) + (x * imageBytes));
+
+				if ((abovePixel > 0 && belowPixel < size) && (combinedSobel[index] < combinedSobel[belowPixel] || combinedSobel[index] < combinedSobel[abovePixel])) { combinedSobel[index] = 0; }
+			}
+			else if (edgeStrength[index] == 135.0f) {
+				int diagUpLeftPixel = ((y - 1 * imageWidth * imageBytes) + (x - 1 * imageBytes));
+				int diagDownRightPixel = ((y + 1 * imageWidth * imageBytes) + (x + 1 * imageBytes));
+
+				if ((diagUpLeftPixel > 0 && diagUpLeftPixel < size && diagDownRightPixel > 0 && diagDownRightPixel < size) && (combinedSobel[index] < combinedSobel[diagDownRightPixel] || combinedSobel[index] < combinedSobel[diagUpLeftPixel])) { combinedSobel[index] = 0; }
+			}
+
 		}
 	}
 
 	return combinedSobel;
+}
+
+unsigned char* imageProcessor::doubleThresholding(unsigned char image[], int imageWidth, int imageHeight, int imageBytes) {
+	int lowThresh = 75;
+	int highThresh = 200;
+	int strongEdge = 255;
+	int weakEdge = 100;
+	int size = imageWidth * imageHeight * imageBytes;
+
+	printf("%s \n", "Performing Double-Thresholding");
+	unsigned char* treshData = new unsigned char[size];
+
+	for (int i = 0; i < size; i++) {
+		if (image[i] < lowThresh) { treshData[i] = 0; }
+		else if (image[i] > highThresh) { treshData[i] = strongEdge; }
+		else if (image[i] >= lowThresh && image[i] <= highThresh) { treshData[i] = weakEdge; }
+	}
+	return treshData;
 }

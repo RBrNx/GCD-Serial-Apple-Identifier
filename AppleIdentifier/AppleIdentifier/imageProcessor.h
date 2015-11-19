@@ -40,4 +40,6 @@ public:
 
 	unsigned char * NonMaxSuppress(unsigned char * sobelX, unsigned char * sobelY, unsigned char * combinedSobel, int imageWidth, int imageHeight, int imageBytes);
 
+	unsigned char * doubleThresholding(unsigned char data[], int imageWidth, int imageHeight, int imageBytes);
+
 };

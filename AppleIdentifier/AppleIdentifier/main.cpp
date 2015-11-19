@@ -87,10 +87,15 @@ int main() {
 	///////////////////////////////////
 	// Apply Non-Maximum Suppression //
 	///////////////////////////////////
-	//imagePro.NonMaxSuppress();
+	sobelData = imagePro.NonMaxSuppress(sobelX, sobelY, sobelData, imageWidth, imageHeight, imageBytes);
 
 	delete[] sobelX;
 	delete[] sobelY;
+
+	///////////////////////////////
+	// Apply Double-Thresholding //
+	///////////////////////////////
+	sobelData = imagePro.doubleThresholding(sobelData, imageWidth, imageHeight, imageBytes);
 
 	////////////////////////
 	// Pad Sides of Image //
@@ -100,7 +105,7 @@ int main() {
 	size = imageHeight * imageWidth * imageBytes;
 	unsigned char* paddedImage = imagePro.padOutImage(sobelData, imageWidth, imageHeight, imageBytes);
 
-	imageLoader.saveImage("test.png", paddedImage, size);
+	imageLoader.saveImage("test-nms-dthresh.png", paddedImage, size);
 
 	delete[] gaussianData;
 	delete[] sobelData;
