@@ -225,6 +225,10 @@ unsigned int imageIO::getSize() {
 	return size;
 }
 
+void imageIO::setImageBytes(int x) {
+	imageBytes = x;
+}
+
 unsigned int imageIO::getIntLE(const unsigned char *p) {
 //#if LITTLE_ENDIAN
     //return *(unsigned int *)p;

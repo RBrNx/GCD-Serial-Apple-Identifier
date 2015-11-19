@@ -119,11 +119,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="imageIO.cpp" />
+    <ClCompile Include="imageProcessor.cpp" />
     <ClCompile Include="lodepng.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="imageIO.h" />
+    <ClInclude Include="imageProcessor.h" />
     <ClInclude Include="lodepng.h" />
   </ItemGroup>
   <ItemGroup>

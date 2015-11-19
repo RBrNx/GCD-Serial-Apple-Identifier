@@ -22,6 +22,8 @@ public:
 	unsigned int getImageWidth();
 	unsigned int getImageHeight();
 	unsigned int getSize();
+
+	void setImageBytes(int x);
 	
 	unsigned int getIntLE(const unsigned char *p);
 
