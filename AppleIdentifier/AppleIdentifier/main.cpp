@@ -112,19 +112,26 @@ void padOutImage(unsigned char image[], int imageWidth, int imageHeight, int ima
 }
 
 int main() {
-	unsigned char* rawData = imageLoader.openImage("apple.png");
+	unsigned char* rawData = imageLoader.openImage("green2.png");
+	//std::cin.get();
 	int imageWidth = imageLoader.getImageWidth();
 	int imageHeight = imageLoader.getImageHeight();
 	int imageBytes = imageLoader.getImageBytes();
 	int size = imageWidth * imageHeight * imageBytes;
 
+	//printf("%d \n", rawData[0]);
+	//printf("%d \n", rawData[1]);
+	//printf("%d \n", rawData[2]);
+
 	//////////////////////
 	// Colour Histogram //
 	//////////////////////
 	printf("%s \n", "Performing Colour Histogram");
-	for (int y = 0; y < imageHeight; y+=4) {
-		for (int x = 0; x < imageWidth; x+=4) {
-			int index = y * imageHeight + x;
+	for (int y = 0; y < imageHeight; y++) {
+		for (int x = 0; x < imageWidth; x++) {
+			
+			int index = ((y * imageWidth * imageBytes) + (x * imageBytes));
+			//printf("%d \n", index);
 
 			if (rawData[index + 3] != 0) {
 
@@ -132,20 +139,20 @@ int main() {
 
 				if (rawData[index] < 251 || rawData[index + 1] < 251 || rawData[index + 2] < 251) {
 
-					if (rawData[index] > 0 && rawData[index] < 64) redBucket[1] += 1;
-					if (rawData[index] > 63 && rawData[index] < 128) redBucket[2] += 1;
-					if (rawData[index] > 127 && rawData[index] < 192) redBucket[3] += 1;
-					if (rawData[index] > 191 && rawData[index] < 256) redBucket[4] += 1;
+					if (rawData[index] > 0 && rawData[index] < 64) redBucket[0] += 1;
+					if (rawData[index] > 63 && rawData[index] < 128) redBucket[1] += 1;
+					if (rawData[index] > 127 && rawData[index] < 192) redBucket[2] += 1;
+					if (rawData[index] > 191 && rawData[index] < 256) redBucket[3] += 1;
 
-					if (rawData[index + 1] > 0 && rawData[index + 1] < 64) greenBucket[1] += 1;
-					if (rawData[index + 1] > 63 && rawData[index + 1] < 128) greenBucket[2] += 1;
-					if (rawData[index + 1] > 127 && rawData[index + 1] < 192) greenBucket[3] += 1;
-					if (rawData[index + 1] > 191 && rawData[index + 1] < 256) greenBucket[4] += 1;
+					if (rawData[index + 1] > 0 && rawData[index + 1] < 64) greenBucket[0] += 1;
+					if (rawData[index + 1] > 63 && rawData[index + 1] < 128) greenBucket[1] += 1;
+					if (rawData[index + 1] > 127 && rawData[index + 1] < 192) greenBucket[2] += 1;
+					if (rawData[index + 1] > 191 && rawData[index + 1] < 256) greenBucket[3] += 1;
 
-					if (rawData[index + 2] > 0 && rawData[index + 2] < 64) blueBucket[1] += 1;
-					if (rawData[index + 2] > 63 && rawData[index + 2] < 128) blueBucket[2] += 1;
-					if (rawData[index + 2] > 127 && rawData[index + 2] < 192) blueBucket[3] += 1;
-					if (rawData[index + 2] > 191 && rawData[index + 2] < 256) blueBucket[4] += 1;
+					if (rawData[index + 2] > 0 && rawData[index + 2] < 64) blueBucket[0] += 1;
+					if (rawData[index + 2] > 63 && rawData[index + 2] < 128) blueBucket[1] += 1;
+					if (rawData[index + 2] > 127 && rawData[index + 2] < 192) blueBucket[2] += 1;
+					if (rawData[index + 2] > 191 && rawData[index + 2] < 256) blueBucket[3] += 1;
 				}
 			}
 		}
@@ -157,19 +164,19 @@ int main() {
 		blueBucketTotal += blueBucket[i];
 	}
 
-	printf("%d \n", redBucketTotal/4);
-	printf("%d \n", greenBucketTotal/4);
-	printf("%d \n", blueBucketTotal/4);
+	printf("%d \n", redBucketTotal);
+	printf("%d \n", greenBucketTotal);
+	printf("%d \n", blueBucketTotal);
 
 	std::cin.get();
 
-	unsigned char* greyscaleData = RGBtoGreyscale(rawData, imageWidth, imageHeight, imageBytes);
-	delete[] rawData;
+	//unsigned char* greyscaleData = RGBtoGreyscale(rawData, imageWidth, imageHeight, imageBytes);
+	//delete[] rawData;
 
 	///////////////////////////
 	// Apply Gaussian Filter //
 	///////////////////////////
-	printf("%s \n", "Applying Gaussian Filter");
+	/*printf("%s \n", "Applying Gaussian Filter");
 	unsigned char* gaussianData = new unsigned char[size];
 
 	for (int i = 0; i < 25; i++) {
@@ -196,12 +203,12 @@ int main() {
 				gaussianData[index + 3] = 255;
 			}
 		}
-	}
+	}*/
 
 	////////////////////////
 	// Apply Sobel Filter //
 	////////////////////////
-	printf("%s \n", "Applying Sobel Filter");
+	/*printf("%s \n", "Applying Sobel Filter");
 	unsigned char* sobelData = new unsigned char[size];
 	delete[] greyscaleData;
 
@@ -229,17 +236,17 @@ int main() {
 				sobelData[index + 3] = 255;
 			}
 		}
-	}
+	}*/
 	
 	////////////////////////
 	// Pad Sides of Image //
 	////////////////////////
-	padOutImage(sobelData, imageWidth, imageHeight, imageBytes);
+	//padOutImage(sobelData, imageWidth, imageHeight, imageBytes);
 
-	imageLoader.saveImage("sobel+gauss2.png", sobelData, size);
+	imageLoader.saveImage("greentest.png", rawData, size);
 
-	delete[] gaussianData;
-	delete[] sobelData;
+	//delete[] gaussianData;
+	//delete[] sobelData;
 
 	return 0;
 }
