@@ -228,3 +228,46 @@ unsigned char* imageProcessor::doubleThresholding(unsigned char image[], int ima
 	}
 	return treshData;
 }
+
+unsigned char* imageProcessor::hystTracking(unsigned char image[], int imageWidth, int imageHeight, int imageBytes) {
+	printf("%s \n", "Applying Hysterisis Edge Tracking");
+	int size = imageWidth * imageHeight * imageBytes;
+	unsigned char* hystData = new unsigned char[size];
+	int strongEdge = 255;
+
+	for (int y = 0; y < imageHeight; y++) {
+		for (int x = 0; x < imageWidth; x++) {
+
+			int middleIndex = ((y * imageWidth * imageBytes) + (x * imageBytes));
+
+			if (image[middleIndex] != strongEdge) {
+				
+				bool strongEdge = false;
+
+				for (int xOff = -1; xOff <= 1; xOff++) {
+					for (int yOff = -1; yOff <= 1; yOff++) {
+
+						int outIndex = ((y + yOff * imageWidth * imageBytes) + (x + xOff * imageBytes));
+
+						if (outIndex > 0 && outIndex < size) {
+							if (image[outIndex] == strongEdge) {
+								strongEdge = true;
+							}
+						}
+					}
+				}
+				if (strongEdge) {
+					hystData[middleIndex] = image[middleIndex];
+				}
+				else {
+					hystData[middleIndex] = 0;
+				}
+			}
+			else {
+				hystData[middleIndex] = image[middleIndex];
+			}
+		}
+	}
+
+	return hystData;
+}

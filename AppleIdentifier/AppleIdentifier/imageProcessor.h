@@ -42,4 +42,6 @@ public:
 
 	unsigned char * doubleThresholding(unsigned char data[], int imageWidth, int imageHeight, int imageBytes);
 
+	unsigned char * hystTracking(unsigned char image[], int imageWidth, int imageHeight, int imageBytes);
+
 };
