@@ -13,18 +13,13 @@ int main() {
 	int size = imageWidth * imageHeight * imageBytes;
 
 	//////////////////////
-	// Colour Histogram //
-	//////////////////////
-	imagePro.colourHistogram(rawData, imageWidth, imageHeight, imageBytes);
-
-	//////////////////////
 	// RGB to Greyscale //
 	//////////////////////
 	unsigned char* greyscaleData = imagePro.RGBtoGreyscale(rawData, imageWidth, imageHeight, imageBytes);
 	imageLoader.setImageBytes(1);
 	imageBytes = imageLoader.getImageBytes();
 	size = imageWidth * imageHeight * imageBytes;
-	delete[] rawData;
+	//delete[] rawData;
 
 	///////////////////////////
 	// Apply Gaussian Filter //
@@ -107,6 +102,16 @@ int main() {
 	/////////////////////
 	sobelData = imagePro.fillFromEdges(sobelData, imageWidth, imageHeight, imageBytes);
 
+	//////////////////////
+	// Colour Histogram //
+	//////////////////////
+	rawData = imageLoader.openImage("apple.png");
+	imageWidth = imageLoader.getImageWidth();
+	imageHeight = imageLoader.getImageHeight();
+	imageBytes = imageLoader.getImageBytes();
+	size = imageWidth * imageHeight * imageBytes;
+	imagePro.colourHistogram(rawData, imageWidth, imageHeight, imageBytes, sobelData);
+
 	////////////////////////
 	// Pad Sides of Image //
 	////////////////////////
@@ -120,6 +125,7 @@ int main() {
 	delete[] gaussianData;
 	delete[] sobelData;
 	delete[] paddedImage;
+	delete[] rawData;
 	
 	return 0;
 }

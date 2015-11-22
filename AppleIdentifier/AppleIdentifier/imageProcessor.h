@@ -41,6 +41,8 @@ public:
 
 	unsigned char* padOutImage(unsigned char image[], int imageWidth, int imageHeight, int imageBytes);
 
+	void colourHistogram(unsigned char image[], int imageWidth, int imageHeight, int imageBytes, unsigned char mask[]);
+
 	void colourHistogram(unsigned char image[], int imageWidth, int imageHeight, int imageBytes);
 
 	unsigned char * NonMaxSuppress(unsigned char * sobelX, unsigned char * sobelY, unsigned char * combinedSobel, int imageWidth, int imageHeight, int imageBytes);

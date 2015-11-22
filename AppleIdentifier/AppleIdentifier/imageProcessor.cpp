@@ -100,7 +100,56 @@ unsigned char* imageProcessor::padOutImage(unsigned char image[], int imageWidth
 	return paddedImage;
 }
 
+void imageProcessor::colourHistogram(unsigned char image[], int imageWidth, int imageHeight, int imageBytes, unsigned char mask[]) {
+
+	printf("%s \n", "Performing Colour Histogram");
+	for (int y = 0; y < imageHeight; y++) {
+		for (int x = 0; x < imageWidth; x++) {
+
+			int index = ((y * imageWidth * imageBytes) + (x * imageBytes));
+			int maskIndex = ((y * imageWidth) + (x));
+
+			if (mask[maskIndex] == 0) {
+				if (image[index + 3] != 0) {
+
+					if (image[index] < 251 || image[index + 1] < 251 || image[index + 2] < 251) {
+
+						if (image[index] > 0 && image[index] < 64) redBucket[0] += 1;
+						if (image[index] > 63 && image[index] < 128) redBucket[1] += 1;
+						if (image[index] > 127 && image[index] < 192) redBucket[2] += 1;
+						if (image[index] > 191 && image[index] < 256) redBucket[3] += 1;
+
+						if (image[index + 1] > 0 && image[index + 1] < 64) greenBucket[0] += 1;
+						if (image[index + 1] > 63 && image[index + 1] < 128) greenBucket[1] += 1;
+						if (image[index + 1] > 127 && image[index + 1] < 192) greenBucket[2] += 1;
+						if (image[index + 1] > 191 && image[index + 1] < 256) greenBucket[3] += 1;
+
+						if (image[index + 2] > 0 && image[index + 2] < 64) blueBucket[0] += 1;
+						if (image[index + 2] > 63 && image[index + 2] < 128) blueBucket[1] += 1;
+						if (image[index + 2] > 127 && image[index + 2] < 192) blueBucket[2] += 1;
+						if (image[index + 2] > 191 && image[index + 2] < 256) blueBucket[3] += 1;
+					}
+				}
+			}
+		}
+	}
+
+	for (int i = 0; i < 4; i++) {
+		redBucketTotal += redBucket[i];
+		greenBucketTotal += greenBucket[i];
+		blueBucketTotal += blueBucket[i];
+	}
+
+	printf("%s", "Total Red Pixels: ");
+	printf("%d \n", redBucketTotal);
+	printf("%s", "Total Green Pixels: ");
+	printf("%d \n", greenBucketTotal);
+	printf("%s", "Total Blue Pixels: ");
+	printf("%d \n", blueBucketTotal);
+}
+
 void imageProcessor::colourHistogram(unsigned char image[], int imageWidth, int imageHeight, int imageBytes) {
+
 	printf("%s \n", "Performing Colour Histogram");
 	for (int y = 0; y < imageHeight; y++) {
 		for (int x = 0; x < imageWidth; x++) {
