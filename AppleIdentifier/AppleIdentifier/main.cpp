@@ -97,10 +97,15 @@ int main() {
 	///////////////////////////////
 	sobelData = imagePro.doubleThresholding(sobelData, imageWidth, imageHeight, imageBytes);
 
-	///////////////////////////////
+	/////////////////////////
 	// Apply Hyst Tracking //
-	///////////////////////////////
+	/////////////////////////
 	sobelData = imagePro.hystTracking(sobelData, imageWidth, imageHeight, imageBytes);
+
+	/////////////////////
+	// Fill from Edges //
+	/////////////////////
+	sobelData = imagePro.fillFromEdges(sobelData, imageWidth, imageHeight, imageBytes);
 
 	////////////////////////
 	// Pad Sides of Image //
@@ -110,7 +115,7 @@ int main() {
 	size = imageHeight * imageWidth * imageBytes;
 	unsigned char* paddedImage = imagePro.padOutImage(sobelData, imageWidth, imageHeight, imageBytes);
 
-	imageLoader.saveImage("test-nms-dthresh-hyst.png", paddedImage, size);
+	imageLoader.saveImage("test-nms-dthresh-hyst-fill.png", paddedImage, size);
 
 	delete[] gaussianData;
 	delete[] sobelData;

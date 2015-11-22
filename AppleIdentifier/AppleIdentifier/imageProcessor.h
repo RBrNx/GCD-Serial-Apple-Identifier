@@ -11,6 +11,11 @@ private:
 	int redBucketTotal;
 	int greenBucketTotal;
 	int blueBucketTotal;
+
+	int lowThresh = 75;
+	int highThresh = 150;
+	int strongEdge = 255;
+	int weakEdge = 100;
 public:
 
 	float sobelFilterX[9] = {	-1, 0, 1,
@@ -43,5 +48,7 @@ public:
 	unsigned char * doubleThresholding(unsigned char data[], int imageWidth, int imageHeight, int imageBytes);
 
 	unsigned char * hystTracking(unsigned char image[], int imageWidth, int imageHeight, int imageBytes);
+
+	unsigned char * fillFromEdges(unsigned char image[], int imageWidth, int imageHeight, int imageBytes);
 
 };

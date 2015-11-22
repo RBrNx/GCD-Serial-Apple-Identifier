@@ -212,10 +212,6 @@ unsigned char* imageProcessor::NonMaxSuppress(unsigned char* sobelX, unsigned ch
 }
 
 unsigned char* imageProcessor::doubleThresholding(unsigned char image[], int imageWidth, int imageHeight, int imageBytes) {
-	int lowThresh = 75;
-	int highThresh = 200;
-	int strongEdge = 255;
-	int weakEdge = 100;
 	int size = imageWidth * imageHeight * imageBytes;
 
 	printf("%s \n", "Performing Double-Thresholding");
@@ -233,7 +229,6 @@ unsigned char* imageProcessor::hystTracking(unsigned char image[], int imageWidt
 	printf("%s \n", "Applying Hysterisis Edge Tracking");
 	int size = imageWidth * imageHeight * imageBytes;
 	unsigned char* hystData = new unsigned char[size];
-	int strongEdge = 255;
 
 	for (int y = 0; y < imageHeight; y++) {
 		for (int x = 0; x < imageWidth; x++) {
@@ -270,4 +265,42 @@ unsigned char* imageProcessor::hystTracking(unsigned char image[], int imageWidt
 	}
 
 	return hystData;
+}
+
+unsigned char* imageProcessor::fillFromEdges(unsigned char image[], int imageWidth, int imageHeight, int imageBytes) {
+	printf("%s \n", "Filling out from the Edges");
+	int size = imageWidth * imageHeight * imageBytes;
+	unsigned char* filledData = new unsigned char[size];
+	int outerOffset = 10;
+
+	for (int y = 0; y < imageHeight; y++) {
+		int firstPixelIndex = 0;
+		int lastPixelIndex = 0;
+
+		for (int x = 0; x < imageWidth; x++) {
+
+			int index = ((y * imageWidth * imageBytes) + (x * imageBytes));
+
+			if (y > outerOffset && y < imageHeight - outerOffset && x > outerOffset && x < imageWidth - outerOffset) {
+				if (image[index] == strongEdge || image[index] == weakEdge) {
+					if (firstPixelIndex == 0) {
+						firstPixelIndex = index;
+					}
+					else {
+						lastPixelIndex = index;
+					}
+				}
+				else {
+					filledData[index] = 0;
+				}
+			}
+		}
+		if (firstPixelIndex != 0) {
+			for (int i = 0; i < lastPixelIndex - firstPixelIndex; i++) {
+				filledData[firstPixelIndex + i] = 255;
+			}
+		}
+	}
+
+	return filledData;
 }
