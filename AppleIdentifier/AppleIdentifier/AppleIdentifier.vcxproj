@@ -133,6 +133,7 @@
     <Image Include="apple.png" />
     <Image Include="blue.png" />
     <Image Include="green.png" />
+    <Image Include="greenapple.png" />
     <Image Include="images.bmp" />
     <Image Include="red.png" />
   </ItemGroup>

@@ -55,5 +55,8 @@
     <Image Include="red.png">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="greenapple.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>
