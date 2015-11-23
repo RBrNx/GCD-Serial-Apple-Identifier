@@ -19,7 +19,7 @@ int main() {
 	imageLoader.setImageBytes(1);
 	imageBytes = imageLoader.getImageBytes();
 	size = imageWidth * imageHeight * imageBytes;
-	//delete[] rawData;
+	delete[] rawData;
 
 	///////////////////////////
 	// Apply Gaussian Filter //
@@ -82,6 +82,8 @@ int main() {
 	///////////////////////////////////
 	// Apply Non-Maximum Suppression //
 	///////////////////////////////////
+	delete[] gaussianData;
+
 	sobelData = imagePro.NonMaxSuppress(sobelX, sobelY, sobelData, imageWidth, imageHeight, imageBytes);
 
 	delete[] sobelX;
@@ -122,11 +124,12 @@ int main() {
 
 	imageLoader.saveImage("test-nms-dthresh-hyst-fill.png", paddedImage, size);
 
-	delete[] gaussianData;
 	delete[] sobelData;
 	delete[] paddedImage;
 	delete[] rawData;
 	
+	std::cin.get();
+
 	return 0;
 }
 

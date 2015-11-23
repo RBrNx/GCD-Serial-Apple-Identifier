@@ -4,13 +4,9 @@
 class imageProcessor {
 
 private:
-	int redBucket[4];
-	int blueBucket[4];
-	int greenBucket[4];
-
-	int redBucketTotal;
-	int greenBucketTotal;
-	int blueBucketTotal;
+	int redBucket;
+	int blueBucket;
+	int greenBucket;
 
 	int lowThresh = 75;
 	int highThresh = 150;
