@@ -13,6 +13,12 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Resource Files\Images">
+      <UniqueIdentifier>{8c3fd56f-225e-441c-97a5-4e1a3be3571a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Histograms">
+      <UniqueIdentifier>{34ff3a01-4b4e-40cb-9097-4858543f2019}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="imageIO.cpp">
@@ -40,23 +46,91 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="apple.png">
-      <Filter>Resource Files</Filter>
+    <Image Include="Apples\Braeburn.png">
+      <Filter>Resource Files\Images</Filter>
     </Image>
-    <Image Include="images.bmp">
-      <Filter>Resource Files</Filter>
+    <Image Include="Apples\Courtland.png">
+      <Filter>Resource Files\Images</Filter>
     </Image>
-    <Image Include="blue.png">
-      <Filter>Resource Files</Filter>
+    <Image Include="Apples\Fuji.png">
+      <Filter>Resource Files\Images</Filter>
     </Image>
-    <Image Include="green.png">
-      <Filter>Resource Files</Filter>
+    <Image Include="Apples\Gala.png">
+      <Filter>Resource Files\Images</Filter>
     </Image>
-    <Image Include="red.png">
-      <Filter>Resource Files</Filter>
+    <Image Include="Apples\Ginger-Gold.png">
+      <Filter>Resource Files\Images</Filter>
     </Image>
-    <Image Include="greenapple.png">
-      <Filter>Resource Files</Filter>
+    <Image Include="Apples\Golden-Delicious.png">
+      <Filter>Resource Files\Images</Filter>
     </Image>
+    <Image Include="Apples\Granny-Smith.png">
+      <Filter>Resource Files\Images</Filter>
+    </Image>
+    <Image Include="Apples\Honeycrisp.png">
+      <Filter>Resource Files\Images</Filter>
+    </Image>
+    <Image Include="Apples\Jonagold.png">
+      <Filter>Resource Files\Images</Filter>
+    </Image>
+    <Image Include="Apples\Jonathan.png">
+      <Filter>Resource Files\Images</Filter>
+    </Image>
+    <Image Include="Apples\McIntosh.png">
+      <Filter>Resource Files\Images</Filter>
+    </Image>
+    <Image Include="Apples\Pacific-Rose.png">
+      <Filter>Resource Files\Images</Filter>
+    </Image>
+    <Image Include="Apples\Paula-Red.png">
+      <Filter>Resource Files\Images</Filter>
+    </Image>
+    <Image Include="Apples\Red-Delicious.png">
+      <Filter>Resource Files\Images</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Apples\Braeburn.txt">
+      <Filter>Resource Files\Histograms</Filter>
+    </Text>
+    <Text Include="Apples\Courtland.txt">
+      <Filter>Resource Files\Histograms</Filter>
+    </Text>
+    <Text Include="Apples\Fuji.txt">
+      <Filter>Resource Files\Histograms</Filter>
+    </Text>
+    <Text Include="Apples\Gala.txt">
+      <Filter>Resource Files\Histograms</Filter>
+    </Text>
+    <Text Include="Apples\Ginger-Gold.txt">
+      <Filter>Resource Files\Histograms</Filter>
+    </Text>
+    <Text Include="Apples\Golden-Delicious.txt">
+      <Filter>Resource Files\Histograms</Filter>
+    </Text>
+    <Text Include="Apples\Granny-Smith.txt">
+      <Filter>Resource Files\Histograms</Filter>
+    </Text>
+    <Text Include="Apples\Honeycrisp.txt">
+      <Filter>Resource Files\Histograms</Filter>
+    </Text>
+    <Text Include="Apples\Jonagold.txt">
+      <Filter>Resource Files\Histograms</Filter>
+    </Text>
+    <Text Include="Apples\Jonathan.txt">
+      <Filter>Resource Files\Histograms</Filter>
+    </Text>
+    <Text Include="Apples\McIntosh.txt">
+      <Filter>Resource Files\Histograms</Filter>
+    </Text>
+    <Text Include="Apples\Pacific-Rose.txt">
+      <Filter>Resource Files\Histograms</Filter>
+    </Text>
+    <Text Include="Apples\Paula-Red.txt">
+      <Filter>Resource Files\Histograms</Filter>
+    </Text>
+    <Text Include="Apples\Red-Delicious.txt">
+      <Filter>Resource Files\Histograms</Filter>
+    </Text>
   </ItemGroup>
 </Project>

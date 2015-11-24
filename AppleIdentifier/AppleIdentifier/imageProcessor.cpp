@@ -100,7 +100,7 @@ unsigned char* imageProcessor::padOutImage(unsigned char image[], int imageWidth
 	return paddedImage;
 }
 
-void imageProcessor::colourHistogram(unsigned char image[], int imageWidth, int imageHeight, int imageBytes, unsigned char mask[]) {
+void imageProcessor::colourHistogram(unsigned char image[], int imageWidth, int imageHeight, int imageBytes, unsigned char mask[], unsigned char redHist[], unsigned char greenHist[], unsigned char blueHist[]) {
 
 	printf("%s \n", "Performing Colour Histogram with Mask");
 	for (int y = 0; y < imageHeight; y++) {
@@ -114,17 +114,17 @@ void imageProcessor::colourHistogram(unsigned char image[], int imageWidth, int 
 
 					if (image[index] > 110) {
 						if (image[index + 1] < 100 && image[index + 2] < 100) {
-							redBucket++;
+							redHist[image[index]]++;
 						}
 					}
 					else if (image[index + 1] > 110) {
 						if (image[index] < 100 && image[index + 2] < 100) {
-							greenBucket++;
+							greenHist[image[index]]++;
 						}
 					}
 					else if (image[index + 2] > 110) {
 						if (image[index] < 100 && image[index + 1] < 100) {
-							blueBucket++;
+							blueHist[image[index]]++;
 						}
 					}
 				}
@@ -132,15 +132,15 @@ void imageProcessor::colourHistogram(unsigned char image[], int imageWidth, int 
 		}
 	}
 
-	printf("%s", "Relevant Red Pixels: ");
+	/*printf("%s", "Relevant Red Pixels: ");
 	printf("%d \n", redBucket);
 	printf("%s", "Relevant Green Pixels: ");
 	printf("%d \n", greenBucket);
 	printf("%s", "Relevant Blue Pixels: ");
-	printf("%d \n", blueBucket);
+	printf("%d \n", blueBucket);*/
 }
 
-void imageProcessor::colourHistogram(unsigned char image[], int imageWidth, int imageHeight, int imageBytes) {
+void imageProcessor::colourHistogram(unsigned char image[], int imageWidth, int imageHeight, int imageBytes, unsigned char redHist[], unsigned char greenHist[], unsigned char blueHist[]) {
 
 	printf("%s \n", "Performing Colour Histogram with no Mask");
 	for (int y = 0; y < imageHeight; y++) {
@@ -386,6 +386,8 @@ void imageProcessor::loadHistogram(char* filename, unsigned char redHist[], unsi
 }
 
 void imageProcessor::saveHistogram(char* filename, unsigned char redHist[], unsigned char greenHist[], unsigned char blueHist[]) {
+	printf("%s", "Saving Colour Histogram to file: ");
+	printf("%s \n", filename);
 	std::ofstream file (filename);
 	std::string redString;
 	std::string greenString;

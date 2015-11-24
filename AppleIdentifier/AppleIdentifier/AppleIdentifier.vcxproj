@@ -130,12 +130,36 @@
     <ClInclude Include="lodepng.h" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="apple.png" />
-    <Image Include="blue.png" />
-    <Image Include="green.png" />
-    <Image Include="greenapple.png" />
-    <Image Include="images.bmp" />
-    <Image Include="red.png" />
+    <Image Include="Apples\Braeburn.png" />
+    <Image Include="Apples\Courtland.png" />
+    <Image Include="Apples\Fuji.png" />
+    <Image Include="Apples\Gala.png" />
+    <Image Include="Apples\Ginger-Gold.png" />
+    <Image Include="Apples\Golden-Delicious.png" />
+    <Image Include="Apples\Granny-Smith.png" />
+    <Image Include="Apples\Honeycrisp.png" />
+    <Image Include="Apples\Jonagold.png" />
+    <Image Include="Apples\Jonathan.png" />
+    <Image Include="Apples\McIntosh.png" />
+    <Image Include="Apples\Pacific-Rose.png" />
+    <Image Include="Apples\Paula-Red.png" />
+    <Image Include="Apples\Red-Delicious.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Apples\Braeburn.txt" />
+    <Text Include="Apples\Courtland.txt" />
+    <Text Include="Apples\Fuji.txt" />
+    <Text Include="Apples\Gala.txt" />
+    <Text Include="Apples\Ginger-Gold.txt" />
+    <Text Include="Apples\Golden-Delicious.txt" />
+    <Text Include="Apples\Granny-Smith.txt" />
+    <Text Include="Apples\Honeycrisp.txt" />
+    <Text Include="Apples\Jonagold.txt" />
+    <Text Include="Apples\Jonathan.txt" />
+    <Text Include="Apples\McIntosh.txt" />
+    <Text Include="Apples\Pacific-Rose.txt" />
+    <Text Include="Apples\Paula-Red.txt" />
+    <Text Include="Apples\Red-Delicious.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
