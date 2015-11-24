@@ -328,6 +328,9 @@ unsigned char* imageProcessor::fillFromEdges(unsigned char image[], int imageWid
 					filledData[index] = 0;
 				}
 			}
+			else {
+				filledData[index] = 0;
+			}
 		}
 		if (firstPixelIndex != 0) {
 			for (int i = 0; i < lastPixelIndex - firstPixelIndex; i++) {
@@ -337,4 +340,78 @@ unsigned char* imageProcessor::fillFromEdges(unsigned char image[], int imageWid
 	}
 
 	return filledData;
+}
+
+void imageProcessor::loadHistogram(char* filename, unsigned char redHist[], unsigned char blueHist[], unsigned char greenHist[]) {
+	std::ifstream file (filename);
+	std::string redString;
+	std::string greenString;
+	std::string blueString;
+
+	if (file.is_open()) {
+		std::getline(file, redString);
+		std::getline(file, greenString);
+		std::getline(file, blueString);
+	}
+	file.close();
+
+	size_t pos1 = 0;
+	size_t pos2;
+
+	for (int i = 0; i < 256; i++) {
+		pos2 = redString.find(",", pos1);
+		std::string subString = redString.substr(pos1, (pos2 - pos1));
+		redHist[i] = atoi(subString.c_str());
+
+		pos1 = pos2 + 1;
+	}
+
+	pos1 = 0;
+	for (int i = 0; i < 256; i++) {
+		pos2 = greenString.find(",", pos1);
+		std::string subString = greenString.substr(pos1, (pos2 - pos1));
+		greenHist[i] = atoi(subString.c_str());
+
+		pos1 = pos2 + 1;
+	}
+
+	pos1 = 0;
+	for (int i = 0; i < 256; i++) {
+		pos2 = blueString.find(",", pos1);
+		std::string subString = blueString.substr(pos1, (pos2 - pos1));
+		blueHist[i] = atoi(subString.c_str());
+
+		pos1 = pos2 + 1;	
+	}
+}
+
+void imageProcessor::saveHistogram(char* filename, unsigned char redHist[], unsigned char greenHist[], unsigned char blueHist[]) {
+	std::ofstream file (filename);
+	std::string redString;
+	std::string greenString;
+	std::string blueString;
+
+	for (int i = 0; i < 256; i++) {
+		char buffer[4];
+		const char* arrayValue = _itoa((int)redHist[i],buffer,10);
+		redString += std::string(arrayValue) + std::string(",");
+	}
+	for (int i = 0; i < 256; i++) {
+		char buffer[4];
+		const char* arrayValue = _itoa((int)greenHist[i], buffer, 10);
+		greenString += std::string(arrayValue) + std::string(",");
+	}
+	for (int i = 0; i < 256; i++) {
+		char buffer[4];
+		const char* arrayValue = _itoa((int)blueHist[i], buffer, 10);
+		blueString += std::string(arrayValue) + std::string(",");
+	}
+
+
+	if (file.is_open()) {
+		file << redString + std::string("\n");
+		file << greenString + std::string("\n");
+		file << blueString + std::string("\n");
+	}
+	file.close();
 }

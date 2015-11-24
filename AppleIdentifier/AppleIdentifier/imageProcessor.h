@@ -1,5 +1,8 @@
 #pragma once
 #include <iostream>
+#include <fstream>
+#include <sstream>
+#include <string>
 
 class imageProcessor {
 
@@ -8,7 +11,7 @@ private:
 	int blueBucket;
 	int greenBucket;
 
-	int lowThresh = 75;
+	int lowThresh = 70;
 	int highThresh = 150;
 	int strongEdge = 255;
 	int weakEdge = 100;
@@ -48,5 +51,9 @@ public:
 	unsigned char * hystTracking(unsigned char image[], int imageWidth, int imageHeight, int imageBytes);
 
 	unsigned char * fillFromEdges(unsigned char image[], int imageWidth, int imageHeight, int imageBytes);
+
+	void loadHistogram(char * filename, unsigned char redHist[], unsigned char blueHist[], unsigned char greenHist[]);
+
+	void saveHistogram(char * filename, unsigned char redHist[], unsigned char greenHist[], unsigned char blueHist[]);
 
 };

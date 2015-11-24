@@ -5,12 +5,20 @@
 imageIO imageLoader;
 imageProcessor imagePro;
 
+unsigned char redHist[256];
+unsigned char greenHist[256];
+unsigned char blueHist[256];
+
 int main() {
-	unsigned char* rawData = imageLoader.openImage("apple.png");
+	unsigned char* rawData = imageLoader.openImage("Apples/McIntosh.png");
 	int imageWidth = imageLoader.getImageWidth();
 	int imageHeight = imageLoader.getImageHeight();
 	int imageBytes = imageLoader.getImageBytes();
 	int size = imageWidth * imageHeight * imageBytes;
+
+	imagePro.loadHistogram("SavedHist/test.txt", redHist, greenHist, blueHist);
+	imagePro.saveHistogram("SavedHist/test2.txt", redHist, greenHist, blueHist);
+	std::cin.get();
 
 	//////////////////////
 	// RGB to Greyscale //
@@ -107,7 +115,7 @@ int main() {
 	//////////////////////
 	// Colour Histogram //
 	//////////////////////
-	rawData = imageLoader.openImage("apple.png");
+	rawData = imageLoader.openImage("Apples/McIntosh.png");
 	imageWidth = imageLoader.getImageWidth();
 	imageHeight = imageLoader.getImageHeight();
 	imageBytes = imageLoader.getImageBytes();
