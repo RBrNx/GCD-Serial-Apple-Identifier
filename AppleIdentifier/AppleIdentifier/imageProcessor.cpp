@@ -16,7 +16,6 @@ unsigned char* imageProcessor::RGBtoGreyscale(unsigned char image[], int imageWi
 			greyscale += image[imageIndex + 1] * 0.71;
 			greyscale += image[imageIndex + 2] * 0.07;
 			greyscaleData[greyIndex] = greyscale;
-			int m = 3;
 		}
 	}
 
@@ -67,8 +66,6 @@ unsigned char* imageProcessor::padOutImage(unsigned char image[], int imageWidth
 			paddedImage[paddedIndex + 1] = image[index];
 			paddedImage[paddedIndex + 2] = image[index];
 			paddedImage[paddedIndex + 3] = 255;
-
-			int m = 3;
 		}
 	}
 	
@@ -100,7 +97,7 @@ unsigned char* imageProcessor::padOutImage(unsigned char image[], int imageWidth
 	return paddedImage;
 }
 
-void imageProcessor::colourHistogram(unsigned char image[], int imageWidth, int imageHeight, int imageBytes, unsigned char mask[], unsigned char redHist[], unsigned char greenHist[], unsigned char blueHist[]) {
+void imageProcessor::colourHistogram(unsigned char image[], int imageWidth, int imageHeight, int imageBytes, unsigned char mask[], float redHist[], float greenHist[], float blueHist[]) {
 
 	printf("%s \n", "Performing Colour Histogram with Mask");
 	for (int y = 0; y < imageHeight; y++) {
@@ -109,7 +106,7 @@ void imageProcessor::colourHistogram(unsigned char image[], int imageWidth, int 
 			int index = ((y * imageWidth * imageBytes) + (x * imageBytes));
 			int maskIndex = ((y * imageWidth) + (x));
 
-			if (mask[maskIndex] == 0) {
+			if (mask[maskIndex] != 0) {
 				if (image[index + 3] != 0) {
 
 					if (image[index] > 110) {
@@ -140,7 +137,7 @@ void imageProcessor::colourHistogram(unsigned char image[], int imageWidth, int 
 	printf("%d \n", blueBucket);*/
 }
 
-void imageProcessor::colourHistogram(unsigned char image[], int imageWidth, int imageHeight, int imageBytes, unsigned char redHist[], unsigned char greenHist[], unsigned char blueHist[]) {
+void imageProcessor::colourHistogram(unsigned char image[], int imageWidth, int imageHeight, int imageBytes, float redHist[], float greenHist[], float blueHist[]) {
 
 	printf("%s \n", "Performing Colour Histogram with no Mask");
 	for (int y = 0; y < imageHeight; y++) {
@@ -170,12 +167,12 @@ void imageProcessor::colourHistogram(unsigned char image[], int imageWidth, int 
 		}
 	}
 
-	printf("%s", "Relevant Red Pixels: ");
+	/*printf("%s", "Relevant Red Pixels: ");
 	printf("%d \n", redBucket);
 	printf("%s", "Relevant Green Pixels: ");
 	printf("%d \n", greenBucket);
 	printf("%s", "Relevant Blue Pixels: ");
-	printf("%d \n", blueBucket);
+	printf("%d \n", blueBucket);*/
 }
 
 unsigned char* imageProcessor::NonMaxSuppress(unsigned char* sobelX, unsigned char* sobelY, unsigned char*  combinedSobel, int imageWidth, int imageHeight, int imageBytes) {
@@ -342,7 +339,7 @@ unsigned char* imageProcessor::fillFromEdges(unsigned char image[], int imageWid
 	return filledData;
 }
 
-void imageProcessor::loadHistogram(char* filename, unsigned char redHist[], unsigned char blueHist[], unsigned char greenHist[]) {
+void imageProcessor::loadHistogram(char* filename, float redHist[], float greenHist[], float blueHist[]) {
 	std::ifstream file (filename);
 	std::string redString;
 	std::string greenString;
@@ -362,7 +359,6 @@ void imageProcessor::loadHistogram(char* filename, unsigned char redHist[], unsi
 		pos2 = redString.find(",", pos1);
 		std::string subString = redString.substr(pos1, (pos2 - pos1));
 		redHist[i] = atoi(subString.c_str());
-
 		pos1 = pos2 + 1;
 	}
 
@@ -385,7 +381,7 @@ void imageProcessor::loadHistogram(char* filename, unsigned char redHist[], unsi
 	}
 }
 
-void imageProcessor::saveHistogram(char* filename, unsigned char redHist[], unsigned char greenHist[], unsigned char blueHist[]) {
+void imageProcessor::saveHistogram(char* filename, float redHist[], float greenHist[], float blueHist[]) {
 	printf("%s", "Saving Colour Histogram to file: ");
 	printf("%s \n", filename);
 	std::ofstream file (filename);
@@ -394,19 +390,19 @@ void imageProcessor::saveHistogram(char* filename, unsigned char redHist[], unsi
 	std::string blueString;
 
 	for (int i = 0; i < 256; i++) {
-		char buffer[4];
-		const char* arrayValue = _itoa((int)redHist[i],buffer,10);
-		redString += std::string(arrayValue) + std::string(",");
+		std::stringstream stream;
+		stream << redHist[i];
+		redString += stream.str() + std::string(",");
 	}
 	for (int i = 0; i < 256; i++) {
-		char buffer[4];
-		const char* arrayValue = _itoa((int)greenHist[i], buffer, 10);
-		greenString += std::string(arrayValue) + std::string(",");
+		std::stringstream stream;
+		stream << greenHist[i];
+		greenString += stream.str() + std::string(",");
 	}
 	for (int i = 0; i < 256; i++) {
-		char buffer[4];
-		const char* arrayValue = _itoa((int)blueHist[i], buffer, 10);
-		blueString += std::string(arrayValue) + std::string(",");
+		std::stringstream stream;
+		stream << blueHist[i];
+		blueString += stream.str() + std::string(",");
 	}
 
 
@@ -416,4 +412,92 @@ void imageProcessor::saveHistogram(char* filename, unsigned char redHist[], unsi
 		file << blueString + std::string("\n");
 	}
 	file.close();
+}
+
+std::string imageProcessor::compareHistogram(float redHist[], float greenHist[], float blueHist[], std::string imageArray[]) {
+	float loadedRedHist[256];
+	float loadedBlueHist[256];
+	float loadedGreenHist[256];
+
+	float currentRedHist[256];
+	float currentGreenHist[256];
+	float currentBlueHist[256];
+
+	double redChi = 0;
+	double greenChi = 0;
+	double blueChi = 0;
+
+	double lowestRedChi = 100;
+	double lowestGreenChi = 100;
+	double lowestBlueChi = 100;
+
+	int currentClosestRed;
+	int currentClosestGreen;
+	int currentClosestBlue;
+
+
+	for (int i = 0; i < 14; i++) {
+
+		for (int i = 0; i < 256; i++) {
+			currentRedHist[i] = redHist[i];
+			currentGreenHist[i] = greenHist[i];
+			currentBlueHist[i] = blueHist[i];
+		}
+
+		imageArray[i].append(".txt");
+		char* filename = new char[imageArray[i].length() + 1];
+		strcpy(filename, imageArray[i].c_str());
+
+		loadHistogram(filename, loadedRedHist, loadedGreenHist, loadedBlueHist);
+		normaliseColourHistogram(currentRedHist, currentGreenHist, currentBlueHist);
+		normaliseColourHistogram(loadedRedHist, loadedGreenHist, loadedBlueHist);
+
+
+
+		for (int i = 0; i < 256; i++) {
+			if (loadedRedHist[i] != 0 || currentRedHist[i] != 0) {
+				float difference = currentRedHist[i] - loadedRedHist[i];
+				redChi += pow(difference, 2) / (currentRedHist[i] + loadedRedHist[i]);
+			}
+			if (loadedGreenHist[i] != 0 || currentGreenHist[i] != 0) {
+				float difference = currentGreenHist[i] - loadedGreenHist[i];
+				greenChi += pow(difference, 2) / (currentGreenHist[i] + loadedGreenHist[i]);
+			}
+			if (loadedBlueHist[i] != 0 || currentBlueHist[i] != 0) {
+				float difference = currentBlueHist[i] - loadedBlueHist[i];
+				blueChi += pow(difference, 2) / (currentBlueHist[i] + loadedBlueHist[i]);
+			}
+		}
+
+		if (redChi < lowestRedChi) {
+			currentClosestRed = i;
+			lowestRedChi = redChi;
+		}
+		if (greenChi < lowestGreenChi) {
+			currentClosestGreen = i;
+			lowestGreenChi = greenChi;
+		}
+		if (blueChi < lowestBlueChi) {
+			currentClosestBlue = i;
+			lowestBlueChi = blueChi;
+		}
+		redChi = 0;
+		greenChi = 0;
+		blueChi = 0;
+	}
+	printf("%d", currentClosestRed);
+	printf("%d", currentClosestGreen);
+	printf("%d", currentClosestBlue);
+
+	std::cin.get();
+
+	return std::string("");
+}
+
+void imageProcessor::normaliseColourHistogram(float redHist[], float greenHist[], float blueHist[]) {
+	for (int i = 0; i < 256; i++) {
+		redHist[i] = redHist[i] / 256;
+		greenHist[i] = greenHist[i] / 256;
+		blueHist[i] = blueHist[i] / 256;
+	}
 }

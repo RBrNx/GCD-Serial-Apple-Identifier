@@ -40,9 +40,9 @@ public:
 
 	unsigned char* padOutImage(unsigned char image[], int imageWidth, int imageHeight, int imageBytes);
 
-	void colourHistogram(unsigned char image[], int imageWidth, int imageHeight, int imageBytes, unsigned char mask[], unsigned char redHist[], unsigned char greenHist[], unsigned char blueHist[]);
+	void colourHistogram(unsigned char image[], int imageWidth, int imageHeight, int imageBytes, unsigned char mask[], float redHist[], float greenHist[], float blueHist[]);
 
-	void colourHistogram(unsigned char image[], int imageWidth, int imageHeight, int imageBytes, unsigned char redHist[], unsigned char greenHist[], unsigned char blueHist[]);
+	void colourHistogram(unsigned char image[], int imageWidth, int imageHeight, int imageBytes, float redHist[], float greenHist[], float blueHist[]);
 
 	unsigned char * NonMaxSuppress(unsigned char * sobelX, unsigned char * sobelY, unsigned char * combinedSobel, int imageWidth, int imageHeight, int imageBytes);
 
@@ -52,8 +52,12 @@ public:
 
 	unsigned char * fillFromEdges(unsigned char image[], int imageWidth, int imageHeight, int imageBytes);
 
-	void loadHistogram(char * filename, unsigned char redHist[], unsigned char blueHist[], unsigned char greenHist[]);
+	void loadHistogram(char * filename, float redHist[], float greenHist[], float blueHist[]);
 
-	void saveHistogram(char * filename, unsigned char redHist[], unsigned char greenHist[], unsigned char blueHist[]);
+	void saveHistogram(char * filename, float redHist[], float greenHist[], float blueHist[]);
+
+	std::string compareHistogram(float redHist[], float greenHist[], float blueHist[], std::string imageArray[]);
+
+	void normaliseColourHistogram(float redHist[], float greenHist[], float blueHist[]);
 
 };
