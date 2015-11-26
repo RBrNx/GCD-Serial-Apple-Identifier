@@ -8,12 +8,12 @@ imageProcessor imagePro;
 float redHist[256];
 float greenHist[256];
 float blueHist[256];
-std::string imageArray[14] = { "Apples/Braeburn", "Apples/Courtland", "Apples/Fuji", "Apples/Gala", "Apples/Ginger-Gold",
+std::string imageArray[14] = { "Apples/Braeburn", "Apples/Cortland", "Apples/Fuji", "Apples/Gala", "Apples/Ginger-Gold",
 								"Apples/Golden-Delicious", "Apples/Granny-Smith", "Apples/Honeycrisp", "Apples/Jonagold",
 								"Apples/Jonathan", "Apples/McIntosh", "Apples/Pacific-Rose", "Apples/Paula-Red", "Apples/Red-Delicious" };
 
 int main() {
-	unsigned char* rawData = imageLoader.openImage("Apples/Red-Delicious.png");
+	unsigned char* rawData = imageLoader.openImage("RedDelicious.png");
 	int imageWidth = imageLoader.getImageWidth();
 	int imageHeight = imageLoader.getImageHeight();
 	int imageBytes = imageLoader.getImageBytes();
@@ -114,18 +114,14 @@ int main() {
 	//////////////////////
 	// Colour Histogram //
 	//////////////////////
-	rawData = imageLoader.openImage("Apples/Red-Delicious.png");
+	rawData = imageLoader.openImage("RedDelicious.png");
 	imageWidth = imageLoader.getImageWidth();
 	imageHeight = imageLoader.getImageHeight();
 	imageBytes = imageLoader.getImageBytes();
 	size = imageWidth * imageHeight * imageBytes;
 	imagePro.colourHistogram(rawData, imageWidth, imageHeight, imageBytes, sobelData, redHist, greenHist, blueHist);
-
-	for (int i = 0; i < 256; i++) {
-		int m = 3;
-	}
 		
-	//imagePro.saveHistogram("Apples/Red-Delicious.txt", redHist, greenHist, blueHist);
+	//imagePro.saveHistogram("PacRose-Test.txt", redHist, greenHist, blueHist);
 
 	//////////////////////////
 	// Compare Loaded Apple //
@@ -135,13 +131,13 @@ int main() {
 	////////////////////////
 	// Pad Sides of Image //
 	////////////////////////
-	//imageLoader.setImageBytes(4);
-	//imageBytes = imageLoader.getImageBytes();
-	//size = imageHeight * imageWidth * imageBytes;
-	//unsigned char* paddedImage = new unsigned char[size];
-	//paddedImage = imagePro.padOutImage(sobelData, imageWidth, imageHeight, imageBytes);
+	/*imageLoader.setImageBytes(4);
+	imageBytes = imageLoader.getImageBytes();
+	size = imageHeight * imageWidth * imageBytes;
+	unsigned char* paddedImage = new unsigned char[size];
+	paddedImage = imagePro.padOutImage(sobelData, imageWidth, imageHeight, imageBytes);
 
-	//imageLoader.saveImage(filename, paddedImage, size);
+	imageLoader.saveImage("Apples/Red-Delicious-mask.png", paddedImage, size);*/
 
 	//delete[] filename;
 	delete[] sobelData;

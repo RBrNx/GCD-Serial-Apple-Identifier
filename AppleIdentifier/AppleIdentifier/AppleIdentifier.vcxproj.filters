@@ -88,6 +88,21 @@
     <Image Include="Apples\Red-Delicious.png">
       <Filter>Resource Files\Images</Filter>
     </Image>
+    <Image Include="Cortland.png">
+      <Filter>Resource Files\Images</Filter>
+    </Image>
+    <Image Include="GoldenDelicious.png">
+      <Filter>Resource Files\Images</Filter>
+    </Image>
+    <Image Include="GrannySmith.png">
+      <Filter>Resource Files\Images</Filter>
+    </Image>
+    <Image Include="PacRose-Test.png">
+      <Filter>Resource Files\Images</Filter>
+    </Image>
+    <Image Include="RedDelicious.png">
+      <Filter>Resource Files\Images</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <Text Include="Apples\Braeburn.txt">

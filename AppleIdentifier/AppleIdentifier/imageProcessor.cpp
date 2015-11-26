@@ -435,6 +435,9 @@ std::string imageProcessor::compareHistogram(float redHist[], float greenHist[],
 	int currentClosestGreen;
 	int currentClosestBlue;
 
+	int closestArray[13];
+	int j = 0;
+
 
 	for (int i = 0; i < 14; i++) {
 
@@ -452,8 +455,6 @@ std::string imageProcessor::compareHistogram(float redHist[], float greenHist[],
 		normaliseColourHistogram(currentRedHist, currentGreenHist, currentBlueHist);
 		normaliseColourHistogram(loadedRedHist, loadedGreenHist, loadedBlueHist);
 
-
-
 		for (int i = 0; i < 256; i++) {
 			if (loadedRedHist[i] != 0 || currentRedHist[i] != 0) {
 				float difference = currentRedHist[i] - loadedRedHist[i];
@@ -469,7 +470,7 @@ std::string imageProcessor::compareHistogram(float redHist[], float greenHist[],
 			}
 		}
 
-		if (redChi < lowestRedChi) {
+		/*if (redChi < lowestRedChi) {
 			currentClosestRed = i;
 			lowestRedChi = redChi;
 		}
@@ -480,14 +481,31 @@ std::string imageProcessor::compareHistogram(float redHist[], float greenHist[],
 		if (blueChi < lowestBlueChi) {
 			currentClosestBlue = i;
 			lowestBlueChi = blueChi;
+		}*/
+		if (redChi <= 5 && greenChi <= 5 && blueChi <= 5) {
+			closestArray[j+1] = i;
+			j++;
 		}
+		else {
+			closestArray[j+1] = NULL;
+			j++;
+		}
+
 		redChi = 0;
 		greenChi = 0;
 		blueChi = 0;
+
 	}
-	printf("%d", currentClosestRed);
-	printf("%d", currentClosestGreen);
-	printf("%d", currentClosestBlue);
+	//printf("%d", currentClosestRed);
+	//printf("%d", currentClosestGreen);
+	//printf("%d", currentClosestBlue);
+	printf("%s \n", "This Apple is Similar to: ");
+	for (int i = 0; i < 14; i++) {
+		if (closestArray[i] != NULL) {
+			std::string apple = imageArray[i].substr(7, imageArray[i].length() - 11);
+			printf("%s \n", apple.c_str());
+		}
+	}
 
 	std::cin.get();
 

@@ -144,6 +144,11 @@
     <Image Include="Apples\Pacific-Rose.png" />
     <Image Include="Apples\Paula-Red.png" />
     <Image Include="Apples\Red-Delicious.png" />
+    <Image Include="Cortland.png" />
+    <Image Include="GoldenDelicious.png" />
+    <Image Include="GrannySmith.png" />
+    <Image Include="PacRose-Test.png" />
+    <Image Include="RedDelicious.png" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Apples\Braeburn.txt" />
