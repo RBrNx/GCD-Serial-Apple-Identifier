@@ -209,6 +209,65 @@ void imageIO::saveImage(char* filename, unsigned char dataArray[], int size) {
 	}
 }
 
+int imageIO::isPowerOfTwo(unsigned int x) {
+	return ((x != 0) && !(x & (x - 1)));
+}
+
+unsigned char* imageIO::squareImage(unsigned char origImage[], int imageWidth, int imageHeight, int imageBytes) {
+	int newImageWidth;
+	int newImageHeight;
+
+	if (imageWidth % 2 != 0 || imageHeight % 2 != 0) {
+		if (std::max(imageWidth, imageHeight) == imageWidth) {
+			if (!isPowerOfTwo(imageWidth)) {
+				newImageWidth = pow(2, ceil(log(imageWidth) / log(2)));
+				newImageHeight = newImageWidth;
+			}
+			else {
+				newImageWidth = imageWidth;
+				newImageHeight = imageWidth;
+			}
+		}
+		else {
+			if (!isPowerOfTwo(imageHeight)) {
+				newImageHeight = pow(2, ceil(log(imageHeight) / log(2)));;
+				newImageWidth = newImageHeight;
+			}
+			else {
+				newImageHeight = imageHeight;
+				newImageWidth = imageHeight;
+			}
+		}
+	}
+
+	unsigned char* squareImage = new unsigned char[newImageWidth*newImageHeight*imageBytes];
+
+	for (int y = 0; y < newImageHeight; y++) {
+		for (int x = 0; x < newImageWidth; x++) {
+			int oldIndex = ((y * imageWidth * imageBytes) + (x * imageBytes));
+			int newIndex = ((y * newImageWidth * imageBytes) + (x * imageBytes));
+
+			if (x < imageWidth && y < imageHeight) {
+				squareImage[newIndex] = origImage[oldIndex];
+				squareImage[newIndex + 1] = origImage[oldIndex + 1];
+				squareImage[newIndex + 2] = origImage[oldIndex + 2];
+				squareImage[newIndex + 3] = origImage[oldIndex + 3];
+			}
+			else {
+				squareImage[newIndex] = 255;
+				squareImage[newIndex + 1] = 255;
+				squareImage[newIndex + 2] = 255;
+				squareImage[newIndex + 3] = 255;
+			}
+		}
+	}
+
+	setImageWidth(newImageWidth);
+	setImageHeight(newImageHeight);
+
+	return squareImage;
+}
+
 unsigned int imageIO::getImageBytes() {
 	return imageBytes;
 }
@@ -227,6 +286,14 @@ unsigned int imageIO::getSize() {
 
 void imageIO::setImageBytes(int x) {
 	imageBytes = x;
+}
+
+void imageIO::setImageWidth(int width) {
+	imageWidth = width;
+}
+
+void imageIO::setImageHeight(int height) {
+	imageHeight = height;
 }
 
 unsigned int imageIO::getIntLE(const unsigned char *p) {

@@ -13,20 +13,26 @@ std::string imageArray[14] = { "Apples/Braeburn", "Apples/Cortland", "Apples/Fuj
 								"Apples/Jonathan", "Apples/McIntosh", "Apples/Pacific-Rose", "Apples/Paula-Red", "Apples/Red-Delicious" };
 
 int main() {
-	unsigned char* rawData = imageLoader.openImage("RedDelicious.png");
+	unsigned char* rawData = imageLoader.openImage("Apples/Gala.png");
 	int imageWidth = imageLoader.getImageWidth();
 	int imageHeight = imageLoader.getImageHeight();
 	int imageBytes = imageLoader.getImageBytes();
 	int size = imageWidth * imageHeight * imageBytes;
 
+	unsigned char* squareImage = imageLoader.squareImage(rawData, imageWidth, imageHeight, imageBytes);
+	imageWidth = imageLoader.getImageWidth();
+	imageHeight = imageLoader.getImageHeight();
+	size = imageWidth * imageHeight * imageBytes;
+	delete[] rawData;
+
 	//////////////////////
 	// RGB to Greyscale //
 	//////////////////////
-	unsigned char* greyscaleData = imagePro.RGBtoGreyscale(rawData, imageWidth, imageHeight, imageBytes);
+	unsigned char* greyscaleData = imagePro.RGBtoGreyscale(squareImage, imageWidth, imageHeight, imageBytes);
 	imageLoader.setImageBytes(1);
 	imageBytes = imageLoader.getImageBytes();
 	size = imageWidth * imageHeight * imageBytes;
-	delete[] rawData;
+	delete[] squareImage;
 
 	///////////////////////////
 	// Apply Gaussian Filter //
@@ -126,22 +132,22 @@ int main() {
 	//////////////////////////
 	// Compare Loaded Apple //
 	//////////////////////////
-	std::string result = imagePro.compareHistogram(redHist, greenHist, blueHist, imageArray);
+	//std::string result = imagePro.compareHistogram(redHist, greenHist, blueHist, imageArray);
 
 	////////////////////////
 	// Pad Sides of Image //
 	////////////////////////
-	/*imageLoader.setImageBytes(4);
+	imageLoader.setImageBytes(4);
 	imageBytes = imageLoader.getImageBytes();
 	size = imageHeight * imageWidth * imageBytes;
 	unsigned char* paddedImage = new unsigned char[size];
 	paddedImage = imagePro.padOutImage(sobelData, imageWidth, imageHeight, imageBytes);
 
-	imageLoader.saveImage("Apples/Red-Delicious-mask.png", paddedImage, size);*/
+	imageLoader.saveImage("Apples/Gala-2048.png", paddedImage, size);
 
 	//delete[] filename;
 	delete[] sobelData;
-	//delete[] paddedImage;
+	delete[] paddedImage;
 	delete[] rawData;
 
 	return 0;

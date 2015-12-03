@@ -2,6 +2,7 @@
 #define _CRT_SECURE_NO_DEPRECATE
 #include "lodepng.h"
 #include <iostream>
+#include <algorithm>
 
 class imageIO {
 
@@ -17,6 +18,9 @@ public:
 	
 	unsigned char * openImage(char * filename);
 	void saveImage(char * filename, unsigned char dataArray[], int size);
+
+	int isPowerOfTwo(unsigned int x);
+	unsigned char* squareImage(unsigned char origImage[], int imageWidth, int imageHeight, int imageBytes);
 	
 	unsigned int getImageBytes();
 	unsigned int getImageWidth();
@@ -24,6 +28,10 @@ public:
 	unsigned int getSize();
 
 	void setImageBytes(int x);
+
+	void setImageWidth(int width);
+
+	void setImageHeight(int height);
 	
 	unsigned int getIntLE(const unsigned char *p);
 
