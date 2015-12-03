@@ -13,7 +13,7 @@ std::string imageArray[14] = { "Apples/Braeburn", "Apples/Cortland", "Apples/Fuj
 								"Apples/Jonathan", "Apples/McIntosh", "Apples/Pacific-Rose", "Apples/Paula-Red", "Apples/Red-Delicious" };
 
 int main() {
-	unsigned char* rawData = imageLoader.openImage("Apples/Gala.png");
+	unsigned char* rawData = imageLoader.openImage("Apples/test.png");
 	int imageWidth = imageLoader.getImageWidth();
 	int imageHeight = imageLoader.getImageHeight();
 	int imageBytes = imageLoader.getImageBytes();

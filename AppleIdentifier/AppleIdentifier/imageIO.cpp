@@ -214,29 +214,27 @@ int imageIO::isPowerOfTwo(unsigned int x) {
 }
 
 unsigned char* imageIO::squareImage(unsigned char origImage[], int imageWidth, int imageHeight, int imageBytes) {
-	int newImageWidth;
-	int newImageHeight;
+	int newImageWidth = 0;
+	int newImageHeight = 0;
 
-	if (imageWidth % 2 != 0 || imageHeight % 2 != 0) {
-		if (std::max(imageWidth, imageHeight) == imageWidth) {
-			if (!isPowerOfTwo(imageWidth)) {
-				newImageWidth = pow(2, ceil(log(imageWidth) / log(2)));
-				newImageHeight = newImageWidth;
-			}
-			else {
-				newImageWidth = imageWidth;
-				newImageHeight = imageWidth;
-			}
+	if (std::max(imageWidth, imageHeight) == imageWidth) {
+		if (!isPowerOfTwo(imageWidth)) {
+			newImageWidth = pow(2, ceil(log(imageWidth) / log(2)));
+			newImageHeight = newImageWidth;
 		}
 		else {
-			if (!isPowerOfTwo(imageHeight)) {
-				newImageHeight = pow(2, ceil(log(imageHeight) / log(2)));;
-				newImageWidth = newImageHeight;
-			}
-			else {
-				newImageHeight = imageHeight;
-				newImageWidth = imageHeight;
-			}
+			newImageWidth = imageWidth;
+			newImageHeight = imageWidth;
+		}
+	}
+	else {
+		if (!isPowerOfTwo(imageHeight)) {
+			newImageHeight = pow(2, ceil(log(imageHeight) / log(2)));;
+			newImageWidth = newImageHeight;
+		}
+		else {
+			newImageHeight = imageHeight;
+			newImageWidth = imageHeight;
 		}
 	}
 
