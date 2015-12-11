@@ -1,4 +1,5 @@
 #include <cmath>
+#include <time.h>
 #include "imageIO.h"
 #include "imageProcessor.h"
 
@@ -22,6 +23,7 @@ std::string imageArray[14] = { "Apples/Braeburn", "Apples/Cortland", "Apples/Fuj
 
 
 int main() {
+	clock_t startTime = clock();
 	//Load the image into an unsigned char array and get the Width/Height/Bytes from the Class
 	unsigned char* rawData = imageLoader.openImage("Apples/Granny-Smith.png");
 	int imageWidth = imageLoader.getImageWidth();
@@ -176,6 +178,12 @@ int main() {
 	delete[] sobelData;
 	delete[] paddedImage;
 	delete[] rawData;
+
+	startTime = clock() - startTime;
+	float seconds = (float)startTime / CLOCKS_PER_SEC;
+	float milli = seconds * 1000;
+	printf("Execution time in Milliseconds is: %f \n", milli);
+	printf("Execution time in Seconds is: %f \n", seconds);
 
 	std::cin.get();
 
