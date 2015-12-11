@@ -119,6 +119,7 @@ int main() {
 	paddedImage = imagePro.padOutImage(sobelData, imageWidth, imageHeight, imageBytes);
 	imageLoader.saveImage("GrannySmith-Sobel.png", paddedImage, size);
 	imageLoader.setImageBytes(1); //Image bytes is set back to 1 so that the rest of the program can continue
+	imageBytes = imageLoader.getImageBytes();
 
 	///////////////////////////////////
 	// Apply Non-Maximum Suppression //
@@ -168,7 +169,7 @@ int main() {
 	imageLoader.setImageBytes(4); //Saving code is only necessary if you would like to see the mask output
 	imageBytes = imageLoader.getImageBytes(); 
 	size = imageHeight * imageWidth * imageBytes;
-	unsigned char* paddedImage = new unsigned char[size];
+    paddedImage = new unsigned char[size];
 	paddedImage = imagePro.padOutImage(sobelData, imageWidth, imageHeight, imageBytes);
 	imageLoader.saveImage("GrannySmith-Mask.png", paddedImage, size);
 
