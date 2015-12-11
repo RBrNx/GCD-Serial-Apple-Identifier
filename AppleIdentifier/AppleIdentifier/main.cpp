@@ -112,14 +112,14 @@ int main() {
 		}
 	}
 
-	imageLoader.setImageBytes(4); //Saving code is only necessary if you would like to see the sobel output - if not then comment this section out
+	/*imageLoader.setImageBytes(4); //Saving code is only necessary if you would like to see the sobel output - if not then comment this section out
 	imageBytes = imageLoader.getImageBytes();
 	size = imageHeight * imageWidth * imageBytes;
 	unsigned char* paddedImage = new unsigned char[size];
 	paddedImage = imagePro.padOutImage(sobelData, imageWidth, imageHeight, imageBytes);
 	imageLoader.saveImage("GrannySmith-Sobel.png", paddedImage, size);
 	imageLoader.setImageBytes(1); //Image bytes is set back to 1 so that the rest of the program can continue
-	imageBytes = imageLoader.getImageBytes();
+	imageBytes = imageLoader.getImageBytes();*/
 
 	///////////////////////////////////
 	// Apply Non-Maximum Suppression //
@@ -146,6 +146,16 @@ int main() {
 	/////////////////////
 	sobelData = imagePro.fillFromEdges(sobelData, imageWidth, imageHeight, imageBytes);
 
+	/////////////////////////////////
+	// Pad Sides of Image and Save //
+	/////////////////////////////////
+	imageLoader.setImageBytes(4); //Saving code is only necessary if you would like to see the mask output
+	imageBytes = imageLoader.getImageBytes();
+	size = imageHeight * imageWidth * imageBytes;
+	unsigned char* paddedImage = new unsigned char[size];
+	paddedImage = imagePro.padOutImage(sobelData, imageWidth, imageHeight, imageBytes);
+	imageLoader.saveImage("GrannySmith-Mask.png", paddedImage, size);
+
 	//////////////////////
 	// Colour Histogram //
 	//////////////////////
@@ -162,16 +172,6 @@ int main() {
 	// Compare Loaded Apple //
 	//////////////////////////
 	std::string result = imagePro.compareHistogram(redHist, greenHist, blueHist, imageArray);
-
-	////////////////////////
-	// Pad Sides of Image //
-	////////////////////////
-	imageLoader.setImageBytes(4); //Saving code is only necessary if you would like to see the mask output
-	imageBytes = imageLoader.getImageBytes(); 
-	size = imageHeight * imageWidth * imageBytes;
-    paddedImage = new unsigned char[size];
-	paddedImage = imagePro.padOutImage(sobelData, imageWidth, imageHeight, imageBytes);
-	imageLoader.saveImage("GrannySmith-Mask.png", paddedImage, size);
 
 	delete[] sobelData;
 	delete[] paddedImage;
