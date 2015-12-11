@@ -22,12 +22,14 @@ std::string imageArray[14] = { "Apples/Braeburn", "Apples/Cortland", "Apples/Fuj
 
 
 int main() {
+	//Load the image into an unsigned char array and get the Width/Height/Bytes from the Class
 	unsigned char* rawData = imageLoader.openImage("Apples/Granny-Smith.png");
 	int imageWidth = imageLoader.getImageWidth();
 	int imageHeight = imageLoader.getImageHeight();
 	int imageBytes = imageLoader.getImageBytes();
 	int size = imageWidth * imageHeight * imageBytes;
 
+	//Increase the dimensions of the image to a power of two and get the Width/Height again
 	unsigned char* squareImage = imageLoader.squareImage(rawData, imageWidth, imageHeight, imageBytes);
 	imageWidth = imageLoader.getImageWidth();
 	imageHeight = imageLoader.getImageHeight();
@@ -37,8 +39,9 @@ int main() {
 	//////////////////////
 	// RGB to Greyscale //
 	//////////////////////
+	//Convert RGB Image to Greyscale
 	unsigned char* greyscaleData = imagePro.RGBtoGreyscale(squareImage, imageWidth, imageHeight, imageBytes);
-	imageLoader.setImageBytes(1);
+	imageLoader.setImageBytes(1); //Greyscale image is only 1 byte instead of 4
 	imageBytes = imageLoader.getImageBytes();
 	size = imageWidth * imageHeight * imageBytes;
 	delete[] squareImage;
@@ -109,6 +112,14 @@ int main() {
 		}
 	}
 
+	imageLoader.setImageBytes(4); //Saving code is only necessary if you would like to see the sobel output - if not then comment this section out
+	imageBytes = imageLoader.getImageBytes();
+	size = imageHeight * imageWidth * imageBytes;
+	unsigned char* paddedImage = new unsigned char[size];
+	paddedImage = imagePro.padOutImage(sobelData, imageWidth, imageHeight, imageBytes);
+	imageLoader.saveImage("GrannySmith-Sobel.png", paddedImage, size);
+	imageLoader.setImageBytes(1); //Image bytes is set back to 1 so that the rest of the program can continue
+
 	///////////////////////////////////
 	// Apply Non-Maximum Suppression //
 	///////////////////////////////////
@@ -144,7 +155,7 @@ int main() {
 	size = imageWidth * imageHeight * imageBytes;
 	imagePro.colourHistogram(rawData, imageWidth, imageHeight, imageBytes, sobelData, redHist, greenHist, blueHist);
 		
-	//imagePro.saveHistogram("Granny-Smith.txt", redHist, greenHist, blueHist);
+	//imagePro.saveHistogram("Granny-Smith.txt", redHist, greenHist, blueHist); //Only Needed for Creating the Test Data Histograms
 
 	//////////////////////////
 	// Compare Loaded Apple //
@@ -154,15 +165,15 @@ int main() {
 	////////////////////////
 	// Pad Sides of Image //
 	////////////////////////
-	//imageLoader.setImageBytes(4);
-	//imageBytes = imageLoader.getImageBytes();
-	//size = imageHeight * imageWidth * imageBytes;
-	//unsigned char* paddedImage = new unsigned char[size];
-	//paddedImage = imagePro.padOutImage(sobelX, imageWidth, imageHeight, imageBytes);
-	//imageLoader.saveImage("Apples/Gala-SobX.png", paddedImage, size);
+	imageLoader.setImageBytes(4); //Saving code is only necessary if you would like to see the mask output
+	imageBytes = imageLoader.getImageBytes(); 
+	size = imageHeight * imageWidth * imageBytes;
+	unsigned char* paddedImage = new unsigned char[size];
+	paddedImage = imagePro.padOutImage(sobelData, imageWidth, imageHeight, imageBytes);
+	imageLoader.saveImage("GrannySmith-Mask.png", paddedImage, size);
 
 	delete[] sobelData;
-	//delete[] paddedImage;
+	delete[] paddedImage;
 	delete[] rawData;
 
 	std::cin.get();
