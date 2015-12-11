@@ -2,6 +2,14 @@
 #include "imageIO.h"
 #include "imageProcessor.h"
 
+float sobelFilterX[9] = { -1, 0, 1,
+-2, 0, 2,
+-1, 0, 1 };
+
+float sobelFilterY[9] = { -1, -2, -1,
+0, 0, 0,
+1, 2, 1 };
+
 imageIO imageLoader;
 imageProcessor imagePro;
 
@@ -12,8 +20,9 @@ std::string imageArray[14] = { "Apples/Braeburn", "Apples/Cortland", "Apples/Fuj
 								"Apples/Golden-Delicious", "Apples/Granny-Smith", "Apples/Honeycrisp", "Apples/Jonagold",
 								"Apples/Jonathan", "Apples/McIntosh", "Apples/Pacific-Rose", "Apples/Paula-Red", "Apples/Red-Delicious" };
 
+
 int main() {
-	unsigned char* rawData = imageLoader.openImage("Apples/test.png");
+	unsigned char* rawData = imageLoader.openImage("Apples/Granny-Smith.png");
 	int imageWidth = imageLoader.getImageWidth();
 	int imageHeight = imageLoader.getImageHeight();
 	int imageBytes = imageLoader.getImageBytes();
@@ -84,11 +93,19 @@ int main() {
 
 			int final = sqrt((resultX*resultX * 3) + (resultY*resultY * 3));
 
+			resultX = resultX > 255 ? 255 : resultX; 
+			resultX = resultX < 0 ? 0 : resultX;
+			resultY = resultY > 255 ? 255 : resultY;
+			resultY = resultY < 0 ? 0 : resultY;
 			final = final > 255 ? 255 : final;
 
 			unsigned char finalChar = final;
+			unsigned char finalCharX = resultX;
+			unsigned char finalCharY = resultY;
 
 			sobelData[index] = finalChar;
+			sobelX[index] = finalCharX;
+			sobelY[index] = finalCharY;
 		}
 	}
 
@@ -120,35 +137,35 @@ int main() {
 	//////////////////////
 	// Colour Histogram //
 	//////////////////////
-	rawData = imageLoader.openImage("RedDelicious.png");
+	rawData = imageLoader.openImage("Apples/Granny-Smith.png");
 	imageWidth = imageLoader.getImageWidth();
 	imageHeight = imageLoader.getImageHeight();
 	imageBytes = imageLoader.getImageBytes();
 	size = imageWidth * imageHeight * imageBytes;
 	imagePro.colourHistogram(rawData, imageWidth, imageHeight, imageBytes, sobelData, redHist, greenHist, blueHist);
 		
-	//imagePro.saveHistogram("PacRose-Test.txt", redHist, greenHist, blueHist);
+	//imagePro.saveHistogram("Granny-Smith.txt", redHist, greenHist, blueHist);
 
 	//////////////////////////
 	// Compare Loaded Apple //
 	//////////////////////////
-	//std::string result = imagePro.compareHistogram(redHist, greenHist, blueHist, imageArray);
+	std::string result = imagePro.compareHistogram(redHist, greenHist, blueHist, imageArray);
 
 	////////////////////////
 	// Pad Sides of Image //
 	////////////////////////
-	imageLoader.setImageBytes(4);
-	imageBytes = imageLoader.getImageBytes();
-	size = imageHeight * imageWidth * imageBytes;
-	unsigned char* paddedImage = new unsigned char[size];
-	paddedImage = imagePro.padOutImage(sobelData, imageWidth, imageHeight, imageBytes);
+	//imageLoader.setImageBytes(4);
+	//imageBytes = imageLoader.getImageBytes();
+	//size = imageHeight * imageWidth * imageBytes;
+	//unsigned char* paddedImage = new unsigned char[size];
+	//paddedImage = imagePro.padOutImage(sobelX, imageWidth, imageHeight, imageBytes);
+	//imageLoader.saveImage("Apples/Gala-SobX.png", paddedImage, size);
 
-	imageLoader.saveImage("Apples/Gala-2048.png", paddedImage, size);
-
-	//delete[] filename;
 	delete[] sobelData;
-	delete[] paddedImage;
+	//delete[] paddedImage;
 	delete[] rawData;
+
+	std::cin.get();
 
 	return 0;
 }

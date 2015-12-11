@@ -11,7 +11,7 @@ private:
 	int blueBucket;
 	int greenBucket;
 
-	int lowThresh = 70;
+	int lowThresh = 50;
 	int highThresh = 150;
 	int strongEdge = 255;
 	int weakEdge = 100;
